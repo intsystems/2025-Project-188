@@ -1,156 +1,102 @@
 \documentclass{article}
+
 \usepackage{arxiv}
 
-\usepackage[utf8]{inputenc}
-\usepackage[english, russian]{babel}
-\usepackage[T1]{fontenc}
+\usepackage{fontspec}
+\setmainfont{Linux Libertine O}
+
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+\setotherlanguage{russian}
+
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage{nicefrac}
 \usepackage{microtype}
 \usepackage{lipsum}
 \usepackage{graphicx}
-\usepackage{natbib}
+
+\usepackage[numbers]{natbib}
+\usepackage{amsthm}
 \usepackage{doi}
+\usepackage{xcolor}
+
+\usepackage{todonotes}
+\newcommand{\todoask}[1]{\todo[color=blue!40]{\textbf{Ask:} #1}}
+\newcommand{\todocheck}[1]{\todo[color=green!40]{\textbf{Check:} #1}}
+\newcommand{\todoread}[1]{\todo[color=orange!40]{\textbf{Read:} #1}}
+\newcommand{\todocomment}[1]{\todo[color=purple!40]{\textbf{Comment:} #1}}
 
 
+\title{Comparative Analysis of Data-Driven Approaches for Hydrological Forecasting}
 
-\title{A template for the \emph{arxiv} style}
-
-\author{ David S.~Hippocampus\thanks{Use footnote for providing further
-		information about author (webpage, alternative
-		address)---\emph{not} for acknowledging funding agencies.} \\
-	Department of Computer Science\\
-	Cranberry-Lemon University\\
-	Pittsburgh, PA 15213 \\
-	\texttt{hippo@cs.cranberry-lemon.edu} \\
-	%% examples of more authors
-	\And
-	Elias D.~Striatum \\
-	Department of Electrical Engineering\\
-	Mount-Sheikh University\\
-	Santa Narimana, Levand \\
-	\texttt{stariate@ee.mount-sheikh.edu} \\
-	%% \AND
-	%% Coauthor \\
-	%% Affiliation \\
-	%% Address \\
-	%% \texttt{email} \\
-	%% \And
-	%% Coauthor \\
-	%% Affiliation \\
-	%% Address \\
-	%% \texttt{email} \\
-	%% \And
-	%% Coauthor \\
-	%% Affiliation \\
-	%% Address \\
-	%% \texttt{email} \\
+\author{%
+    Eldar Khuzin \\
+    Chair of Data Analysis\\
+    Moscow Institute of Physics and Technology\\
+    Moscow, Russia \\
+    \texttt{khuzin.er@phystech.su} \\
+    \And
+    Novikov Ivan \\
+    Affiliation \\
+    Address \\
+    \texttt{email} \\
+    \AND
+    Abramov Dmitrii \\
+    Affiliation \\
+    Address \\
+    \texttt{email}
 }
 \date{}
 
-\renewcommand{\shorttitle}{\textit{arXiv} Template}
-
-%%% Add PDF metadata to help others organize their library
-%%% Once the PDF is generated, you can check the metadata with
-%%% $ pdfinfo template.pdf
 \hypersetup{
-pdftitle={A template for the arxiv style},
-pdfsubject={q-bio.NC, q-bio.QM},
-pdfauthor={David S.~Hippocampus, Elias D.~Striatum},
-pdfkeywords={First keyword, Second keyword, More},
+    pdftitle={Comparative Analysis of Data-Driven Approaches for Hydrological Forecasting},
+    pdfsubject={cs.LG},
+    pdfauthor={Eldar Khuzin, Novikov Ivan, Abramov Dmitrii},
+    pdfkeywords={Flood discharge, Rainfall-runoff modeling, More}
 }
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-	\lipsum[1]
+	В данной работе проводится сравнительный анализ методов машинного обучения для решения задачи прогнозирования речного стока и уровня воды. Рассматриваются классические алгоритмы (Random Forest и CatBoost), отличающиеся сравнительно низкой вычислительной сложностью и быстрым обучением, рекуррентные нейронные сети с долговременной памятью (LSTM), способные учитывать долгосрочные зависимости в данных, и современные архитектуры на основе трансформеров, которые демонстрируют перспективные результаты. Эксперименты проводятся на гидрологических данных рек России и Франции, содержащие динамические временные ряды гидрологических измерений и статические характеристики водосборных бассейнов. Цель работы — выявить наиболее эффективные подходы к прогнозировани.
 \end{abstract}
 
-
-\keywords{First keyword \and Second keyword \and More}
+\keywords{Flood discharge \and Rainfall-runoff modeling \and More}
 
 \section{Introduction}
-\lipsum[2]
-\lipsum[3]
+\label{sec:introduction}
 
-\section{Headings: first level}
-\label{sec:headings}
+Прогнозирование речного стока и уровня воды является важной задачей для предупреждения наводнений и эффективного использования водных ресурсов в таких областях как сельское хозяйство и гидроэнергетика.\cite{laversVisionHydrologicalPrediction2020}
 
-\lipsum[4] See Section \ref{sec:headings}.
+Современные подходы к моделированию гидрологических процессов можно разделить на два основных типа: физически обоснованные (physical-based) и основанные на данных (data-driven). Физические модели, несмотря на свою интерпретируемость и потенциальную точность, имеют ряд существенных недостатков: для их использования требуются обширные данные о речном бассейне и значительные вычислительные ресурсы, что ограничивает их практическое применение в задачах краткосрочного прогнозирования \cite{bellosHybridMethodFlood2016}. Также построение таких моделей требует глубокого понимания гидрологических процессов и сталкивается с проблемами обобщаемости.
 
-\subsection{Headings: second level}
-\lipsum[5]
-\begin{equation}
-	\xi _{ij}(t)=P(x_{t}=i,x_{t+1}=j|y,v,w;\theta)= {\frac {\alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}{\sum _{i=1}^{N} \sum _{j=1}^{N} \alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}}
-\end{equation}
+Data-driven подходы привлекают отсутствием явного моделирования физических процессов. Классические алгоритмы машинного обучения, такие как Random Forest, показывают себя конкуретно способными в определённых условиях, выделяясь при этом быстрой обучаемостью и небольшими требованиями к вычислительным ресурсам\cite{schoppaEvaluatingPerformanceRandom2020}. Рекуррентные нейронные сети (Recurrent Neural Networks, RNN), в частности, Long Short-Term Memory (LSTM), также показывают потенциал за счет способности учитывать долгосрочные зависимости, такие как таянье снежного покрова или наличие накопленной влаги в почве\cite{kratzertRainfallRunoffModelling2018, kratzertHESSOpinionsNever2024}.Недавние исследования демонстрируют, что и трансформеры могут успешно применяться для гидрологических прогнозов\cite{liInterpretableHybridDeep2024,liuProbingLimitHydrologic2023}. Однако сравнительный анализ на разных типах гидрологических данных и в различных географических условиях представлен недостаточно.
 
-\subsubsection{Headings: third level}
-\lipsum[6]
+В данной работе авторы ставят перед собой следующие цели: провести сравнительный анализ data-driven подходов, в частности с желанием побить метрики LSTM, а также исследовать влияние физико-географических атрибутов на результат. Оценка производится через такие метрики, как среднеквадратичная ошибка (RMSE) и коэффициент эффективности Нэша-Сатклиффа (Nash–Sutcliffe Efficiency, NSE).
 
-\paragraph{Paragraph}
-\lipsum[7]
+\section{Problem statement}
+\label{sec:problem_statement}
 
+Используется метрика среднеквадратичной ошибки (MSE). А именно:
+\[
+	\operatorname{MSE}(f) = \frac{1}{N} \sum_{i=1}^N \left( y_i - f(x_i) \right)^2,
+\]
+где \( y_i \) --- истинное значение наблюдения, а \( f(x_i) \) --- предсказанное значение.
 
+И ставится множество оптимизационных задач по нахождению оптимальной модели \( f^* \) в своём классе моделей \( \mathcal{F} \), т.е.:
+\[
+	f^* = \arg\min_{f \in \mathcal{F}} \operatorname{MSE}(f).
+\]
 
-\section{Examples of citations, figures, tables, references}
-\label{sec:others}
+Основное множество данных состоит из динамических временных рядов гидрологических измерений (уровня воды, речного стока, а также температуры) и статических характеристик водосборных бассейнов.
 
-\subsection{Citations}
-Citations use \verb+natbib+. The documentation may be found at
-\begin{center}
-	\url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-\end{center}
-
-Here is an example usage of the two main commands (\verb+citet+ and \verb+citep+): Some people thought a thing \citep{kour2014real, hadash2018estimate} but other people thought something else \citep{kour2014fast}. Many people have speculated that if we knew exactly why \citet{kour2014fast} thought this\dots
-
-\subsection{Figures}
-\lipsum[10]
-See Figure \ref{fig:fig1}. Here is how you add footnotes. \footnote{Sample of the first footnote.}
-\lipsum[11]
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.5\textwidth]{../figures/log_reg_cs_exp.eps}
-	\caption{Sample figure caption.}
-	\label{fig:fig1}
-\end{figure}
-
-\subsection{Tables}
-See awesome Table~\ref{tab:table}.
-
-The documentation for \verb+booktabs+ (`Publication quality tables in LaTeX') is available from:
-\begin{center}
-	\url{https://www.ctan.org/pkg/booktabs}
-\end{center}
-
-
-\begin{table}
-	\caption{Sample table title}
-	\centering
-	\begin{tabular}{lll}
-		\toprule
-		\multicolumn{2}{c}{Part}                   \\
-		\cmidrule(r){1-2}
-		Name     & Description     & Size ($\mu$m) \\
-		\midrule
-		Dendrite & Input terminal  & $\sim$100     \\
-		Axon     & Output terminal & $\sim$10      \\
-		Soma     & Cell body       & up to $10^6$  \\
-		\bottomrule
-	\end{tabular}
-	\label{tab:table}
-\end{table}
-
-\subsection{Lists}
-\begin{itemize}
-	\item Lorem ipsum dolor sit amet
-	\item consectetur adipiscing elit.
-	\item Aliquam dignissim blandit est, in dictum tortor gravida eget. In ac rutrum magna.
-\end{itemize}
-
+\todoask{Требуется ли описать каждую из введённых моделей}
+\todocomment{Поговорить насчёт того, как каждую из моделей адаптировать под данную задачу.}
 
 \bibliographystyle{unsrtnat}
 \bibliography{references}
