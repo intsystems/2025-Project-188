@@ -15,7 +15,7 @@
 
 .. class:: center
 
-    :Название исследуемой задачи: A Comparative Benchmark of ML Methods for Hydrological Forecasting
+    :Название исследуемой задачи: Comparative Analysis of Data-Driven Approaches for Hydrological Forecasting
     :Тип научной работы: M1P
     :Автор: Эльдар Русланович Хузин
     :Научный руководитель: Профессор, Максимов Юрий
