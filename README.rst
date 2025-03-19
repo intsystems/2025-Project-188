@@ -29,9 +29,9 @@ Abstract
 
    * - Русская версия
      - English version 
-   * - В работе исследуется задача прогнозирования речного стока и уровня воды. Выполнено сравнение data-driven подходов: классических методов машинного обучения (Random Forest, CatBoost), как легко вычислимых и быстро обучаемых, рекуррентных нейросетей (LSTM) и современных архитектур (Transformers). Сравнительный анализ проводится на данных рек России и Франции [уточнить описание датасетов], включающих как временные ряды наблюдений на гидрологических постах, так и статические характеристики водосборов. [Добавить описание метрик]. [Добавить описание результатов сравнительного анализа моделей]
-     - In this study, we research the task of forecasting river discharge and water levels. We provide a comparative analysis of data-driven approaches: classic machine learning methods (Random Forest and CatBoost), known for their computational efficiency and rapid training times, recurrent neural networks (LSTM), and advanced architectures based on Transformers. The evaluation utilizes diverse hydrological datasets collected from rivers in Russia and France, encompassing both dynamic hydrological time series from gauging stations and static catchment characteristics.
-
+   * - Моделирование речного стока и уровня воды является одной из ключевых задач в гидрологии. В данной работе исследуется влияние статических характеристик водосборов на прогнозирование речного стока и уровня воды с использованием методов машинного обучения. Новизна работы заключается в анализе значимости признаков при применении классических моделей, рекуррентных нейронных сетей и трансформеров на реках Евразии. Такой подход позволяет выявить наиболее значимые признаки для прогнозирования и оценить целесообразность использования сложных моделей.
+     - Modeling river runoff and water level is of the key challenges in the field of hydrology. In this article, we investigate the impact of static catchment features on predicting river runoff and water levels using machine learning methods. The novelty of our work lies in analyzing feature importance across traditional models, recurrent neural networks, and transformers for rivers located in Eurasia. This approach enables us to identify the most influential predictors and assess the practicality of employing complex models.
+    
 .. Research publications
 .. ===============================
 .. 1. 

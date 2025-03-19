@@ -35,6 +35,7 @@
 \newcommand{\todoread}[1]{\todo[color=orange!40]{\textbf{Read:} #1}} 
 \newcommand{\todocomment}[1]{\todo[color=purple!40]{\textbf{Comment:} #1}}
 
+\newcommand{\dataset_name}[1]{\textbf{#1}}
 
 \title{Comparative Analysis of Data-Driven Approaches for Hydrological Forecasting}
 
@@ -68,8 +69,7 @@
 \maketitle
 
 \begin{abstract}
-	В данной работе проводится сравнительный анализ методов машинного обучения для решения задачи прогнозирования речного стока и уровня воды. Рассматриваются классические алгоритмы (Random Forest и CatBoost), отличающиеся сравнительно низкой вычислительной сложностью и быстрым обучением, рекуррентные нейронные сети с долговременной памятью (LSTM), способные учитывать долгосрочные зависимости в данных, и современные архитектуры на основе трансформеров, которые демонстрируют перспективные результаты. Эксперименты проводятся на гидрологических данных рек России и Франции, содержащие динамические временные ряды гидрологических измерений и статические характеристики водосборных бассейнов. \todocomment{Добавить описание цели и метод сравнения --- медианная NSE} Цель работы — выявить наиболее эффективные подходы к прогнозировани. \todocomment{Переформулировать цель, обсудить с консультантом и экспертом.}    
-    Тестовое изменение
+	Modeling river runoff and water level is of the key challenges in the field of hydrology. In this article, we investigate the impact of static catchment features on predicting river runoff and water levels using machine learning methods. The novelty of our work lies in analyzing feature importance across traditional models, recurrent neural networks, and transformers for rivers located in Eurasia. This approach enables us to identify the most influential predictors and assess the practicality of employing complex models.
 \end{abstract}
 
 \keywords{Flood discharge \and Rainfall-runoff modeling \and More}
@@ -105,6 +105,15 @@ Data-driven подходы привлекают отсутствием явно�
 
 \todo[inline]{Требуется ли описать каждую из введённых моделей}
 \todo[inline]{Поговорить насчёт того, как каждую из моделей адаптировать под данную задачу.}
+
+\section{Experiment design}
+\label{sec:experiment_design}
+
+\subsection{Datasets description}
+
+\begin{itemize}
+    \item \dataset_name{}
+\end{itemize}
 
 \bibliographystyle{unsrtnat}
 \bibliography{references}
