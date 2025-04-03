@@ -31,7 +31,7 @@ Abstract
      - English version 
    * - Моделирование речного стока и уровня воды является одной из ключевых задач в гидрологии. В данной работе исследуется влияние статических характеристик водосборов на прогнозирование речного стока и уровня воды с использованием методов машинного обучения. Новизна работы заключается в анализе значимости признаков при применении классических моделей, рекуррентных нейронных сетей и трансформеров на реках Евразии. Такой подход позволяет выявить наиболее значимые признаки для прогнозирования и оценить целесообразность использования сложных моделей.
      - Modeling river runoff and water level is of the key challenges in the field of hydrology. In this article, we investigate the impact of static catchment features on predicting river runoff and water levels using machine learning methods. The novelty of our work lies in analyzing feature importance across traditional models, recurrent neural networks, and transformers for rivers located in Eurasia. This approach enables us to identify the most influential predictors and assess the practicality of employing complex models.
-    
+
 .. Research publications
 .. ===============================
 .. 1. 

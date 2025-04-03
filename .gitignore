@@ -1,5 +1,11 @@
 # My ignores
 .build
+experiments/data
+experiments/artifacts
+experiments/catboost_info
+**/*jupyterhub*.*
+**/*jupyterhub*
+**/poetry.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

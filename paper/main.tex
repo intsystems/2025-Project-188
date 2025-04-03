@@ -35,7 +35,7 @@
 \newcommand{\todoread}[1]{\todo[color=orange!40]{\textbf{Read:} #1}} 
 \newcommand{\todocomment}[1]{\todo[color=purple!40]{\textbf{Comment:} #1}}
 
-\newcommand{\dataset_name}[1]{\textbf{#1}}
+% \newcommand{\dataset_name}[1]{\textbf{#1}}
 
 \title{Comparative Analysis of Data-Driven Approaches for Hydrological Forecasting}
 
@@ -69,7 +69,7 @@
 \maketitle
 
 \begin{abstract}
-	Modeling river runoff and water level is of the key challenges in the field of hydrology. In this article, we investigate the impact of static catchment features on predicting river runoff and water levels using machine learning methods. The novelty of our work lies in analyzing feature importance across traditional models, recurrent neural networks, and transformers for rivers located in Eurasia. This approach enables us to identify the most influential predictors and assess the practicality of employing complex models.
+    Modeling river runoff and water level is of the key challenges in the field of hydrology. In this article, we investigate the impact of static catchment features on predicting river runoff and water levels using machine learning methods. The novelty of our work lies in analyzing feature importance across traditional models, recurrent neural networks, and transformers for rivers located in Eurasia. This approach enables us to identify the most influential predictors and assess the practicality of employing complex models.
 \end{abstract}
 
 \keywords{Flood discharge \and Rainfall-runoff modeling \and More}
@@ -87,33 +87,101 @@ Data-driven подходы привлекают отсутствием явно�
 
 В данной работе авторы ставят перед собой следующие цели: провести сравнительный анализ data-driven подходов, в частности с желанием побить метрики LSTM, а также исследовать влияние физико-географических атрибутов на результат. Оценка производится через такие метрики, как среднеквадратичная ошибка (RMSE) и коэффициент эффективности Нэша-Сатклиффа (Nash–Sutcliffe Efficiency, NSE).
 
+\subsection{Structure of the article}
+
+\begin{itemize}
+    \item In Section~\ref{sec:problem_statement} we describe the using metrics, models and training workflow.
+    \item In Section~\ref{sec:experiment} describe the experiments design, datasets.
+\end{itemize}
+
 \section{Problem statement}
 \label{sec:problem_statement}
 
-Используется метрика среднеквадратичной ошибки (MSE). А именно:
-\[
-	\operatorname{MSE}(f) = \frac{1}{N} \sum_{i=1}^N \left( y_i - f(x_i) \right)^2,
-\]
-где \( y_i \) --- истинное значение наблюдения, а \( f(x_i) \) --- предсказанное значение.
+\subsection{Used metrics}
+\label{sec:problem_statement:metrics}
 
-И ставится множество оптимизационных задач по нахождению оптимальной модели \( f^* \) в своём классе моделей \( \mathcal{F} \), т.е.:
-\[
-	f^* = \arg\min_{f \in \mathcal{F}} \operatorname{MSE}(f).
-\]
+\todo[inline]{The meaning of metrics and their suitable applications.}
 
-Основное множество данных состоит из динамических временных рядов гидрологических измерений (уровня воды, речного стока, а также температуры) и статических характеристик водосборных бассейнов.
-
-\todo[inline]{Требуется ли описать каждую из введённых моделей}
-\todo[inline]{Поговорить насчёт того, как каждую из моделей адаптировать под данную задачу.}
-
-\section{Experiment design}
-\label{sec:experiment_design}
-
-\subsection{Datasets description}
+The using notation is:
 
 \begin{itemize}
-    \item \dataset_name{}
+    \item \( n \) is the number of observation,
+    \item \( y_i \) is the actual value of the \( i \)-th observation,
+    \item \( \widehat{y}_i \) is the predicted value of the \( i \)-th observation,
+    \item \( \overline{y} \) is the average of actual values defined as \(\frac{1}{n}\sum\limits^{n}_{i=1}{y_i}\).
 \end{itemize}
+
+\subsubsection{Root mean squared error (RMSE)}
+
+\begin{equation}
+    \operatorname{RMSE} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} \left(y_i - \widehat{y}_i\right)^2}
+    \label{metrics:rmse}
+    \tag{RMSE}
+\end{equation}
+
+\subsubsection{Mean absolute error (MAE)}
+
+\begin{equation}
+    \operatorname{MAE} = \frac{1}{n} \sum_{i=1}^{n} \left|y_i - \widehat{y}_i\right|
+    \label{metrics:mae}
+    \tag{MAE}
+\end{equation}
+
+\subsubsection{Mean absolute percentage error (MAPE)}
+
+\begin{equation}
+    \operatorname{MAPE} = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{y_i - \widehat{y}_i}{y_i} \right| \cdot 100\%
+    \label{metrics:mape}
+    \tag{MAPE}
+\end{equation}
+
+
+\subsubsection{Nash-Sutcliffe Efficiency (NSE)}
+\begin{equation}
+    \text{NSE} = 1 - \frac{\sum_{i=1}^{n} (y_i - \widehat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \overline{y})^2}
+    \label{metrics:nse}
+    \tag{NSE}
+\end{equation}
+
+\subsection{Model training}
+
+В процессе обучения перед каждой моделью стоит оптимизационная задача по метрике \ref{metrics:mape}\cite{HydrologicWaterQuality2015,kratzertRainfallRunoffModelling2018}
+
+\todo[inline]{Read the cited article @HydrologicWaterQuality2015}
+
+\section{Computational experiment}
+\label{sec:experiment}
+
+\subsection{Experiment design}
+
+\begin{itemize}
+    \item check
+\end{itemize}
+
+\subsection{Model's descriptions}
+\label{sec:experiment:models_descriptions}
+
+\subsubsection{Experiment design}
+
+
+\subsection{Dataset's descriptions}
+\label{sec:experiment:datasets_descriptions}
+
+
+% \begin{itemize}
+%     \item date --- date of observation,
+%     \item gauge_id --- gauge identificator,
+%     \item lvl_mbs --- t
+%     \item lvl_sm
+%     \item prcp
+%     \item q_cms_s
+%     \item q_mm_day
+%     \item t_max
+%     \item t_mean
+%     \item t_min
+%     \item day_of_year
+% \end{itemize}
+
 
 \bibliographystyle{unsrtnat}
 \bibliography{references}
