@@ -1,0 +1,5 @@
+outs:
+- md5: e4492c0d59dc59dfb5da616324815de1
+  size: 1471455
+  hash: md5
+  path: HydroATLAS_static_feature.csv

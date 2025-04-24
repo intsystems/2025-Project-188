@@ -1,0 +1,5 @@
+outs:
+- md5: ce338b533f2f59e21abebab591daccde
+  size: 475136
+  hash: md5
+  path: GTS_river_gauges.gpkg

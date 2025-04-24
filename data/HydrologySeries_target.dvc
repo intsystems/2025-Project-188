@@ -1,0 +1,6 @@
+outs:
+- md5: 64132a7d02a9b32e161e40a41f0e246d.dir
+  size: 534410405
+  nfiles: 2203
+  hash: md5
+  path: HydrologySeries_target

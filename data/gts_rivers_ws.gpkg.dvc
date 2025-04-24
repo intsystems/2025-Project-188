@@ -1,0 +1,5 @@
+outs:
+- md5: 8f57b8786e4eb416fdb38a373577eac7
+  size: 392859648
+  hash: md5
+  path: gts_rivers_ws.gpkg
