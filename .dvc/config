@@ -1,0 +1,8 @@
+[core]
+    remote = cloudflare-2025-m1p-hydrodata
+    autostage = true
+['remote "cloudflare-2025-m1p-hydrodata"']
+    url = s3://2025-m1p-hydrodata
+    endpointurl = https://b64eaa9dd405c14e64170458eb9b9bce.r2.cloudflarestorage.com
+    access_key_id = cb5a5245986a1fb2cec4b7e7dcd866eb
+    secret_access_key = bf12412bef37f917f53678ec0ba3e99855120da7a82e3fc5f1e596277e77a16b

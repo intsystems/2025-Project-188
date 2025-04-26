@@ -1,0 +1,6 @@
+outs:
+- md5: fafcab834e177d175a26e94c3ad4c336.dir
+  size: 428397175
+  nfiles: 2202
+  hash: md5
+  path: artifacts
