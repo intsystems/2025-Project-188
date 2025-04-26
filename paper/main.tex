@@ -17,17 +17,19 @@
 \usepackage{nicefrac}
 \usepackage{microtype}
 \usepackage{lipsum}
+\usepackage{ragged2e}
 \usepackage{graphicx}
 
 \usepackage[numbers]{natbib}
 \usepackage{amsthm}
 \usepackage{doi}
 \usepackage{xcolor}
+% \usepackage{showframe}
+\usepackage{lipsum}
 
-% \usepackage{todonotes}
 \usepackage[colorinlistoftodos]{todonotes}
 % Adjust the margin width to better accommodate the notes.
-\setlength{\marginparwidth}{2.0cm}  % Adjust as needed for your layout
+% \setlength{\marginparwidth}{2.0cm}  % Adjust as needed for your layout
 
 % Custom commands for different types of notes.
 \newcommand{\todoask}[1]{\todo[color=blue!40]{\textbf{Ask:} #1}}
@@ -36,6 +38,7 @@
 \newcommand{\todocomment}[1]{\todo[color=purple!40]{\textbf{Comment:} #1}}
 
 % \newcommand{\dataset_name}[1]{\textbf{#1}}
+
 
 \title{Comparative Analysis of Data-Driven Approaches for Hydrological Forecasting}
 
@@ -65,14 +68,21 @@
     pdfkeywords={Flood discharge, Rainfall-runoff modeling, More}
 }
 
+
 \begin{document}
+\sloppy        % global, more flexible spacing
+\justifying
+
 \maketitle
 
 \begin{abstract}
-    Modeling river runoff and water level is of the key challenges in the field of hydrology. In this article, we investigate the impact of static catchment features on predicting river runoff and water levels using machine learning methods. The novelty of our work lies in analyzing feature importance across traditional models, recurrent neural networks, and transformers for rivers located in Eurasia. This approach enables us to identify the most influential predictors and assess the practicality of employing complex models.
+    In this article, we address the problem of equifinality in data-driven hydrological modeling — when different feature sets or model architectures yield similar predictive efficiency. We investigate the influence of static catchment features on predictions made by traditional models, recurrent neural networks, and transformers across various river basins in Eurasia. By analyzing feature importance and model behavior, we identify dominant predictors and assess the practicality of employing complex models in terms of interpretability and computational cost. This approach provides insights into the trade-offs between model complexity and predictive robustness in the presence of equifinality.
 \end{abstract}
 
+
 \keywords{Flood discharge \and Rainfall-runoff modeling \and More}
+
+\tableofcontents
 
 \listoftodos[List of suggested changes]
 
@@ -86,7 +96,6 @@
 Data-driven подходы привлекают отсутствием явного моделирования физических процессов. Классические алгоритмы машинного обучения, такие как Random Forest, показывают себя конкуретно способными в определённых условиях, выделяясь при этом быстрой обучаемостью и небольшими требованиями к вычислительным ресурсам\cite{schoppaEvaluatingPerformanceRandom2020}. Рекуррентные нейронные сети (Recurrent Neural Networks, RNN), в частности, Long Short-Term Memory (LSTM), также показывают потенциал за счет способности учитывать долгосрочные зависимости, такие как таянье снежного покрова или наличие накопленной влаги в почве\cite{kratzertRainfallRunoffModelling2018, kratzertHESSOpinionsNever2024}.Недавние исследования демонстрируют, что и трансформеры могут успешно применяться для гидрологических прогнозов\cite{liInterpretableHybridDeep2024,liuProbingLimitHydrologic2023}. Однако сравнительный анализ на разных типах гидрологических данных и в различных географических условиях представлен недостаточно.
 
 В данной работе авторы ставят перед собой следующие цели: провести сравнительный анализ data-driven подходов, в частности с желанием побить метрики LSTM, а также исследовать влияние физико-географических атрибутов на результат. Оценка производится через такие метрики, как среднеквадратичная ошибка (RMSE) и коэффициент эффективности Нэша-Сатклиффа (Nash–Sutcliffe Efficiency, NSE).
-
 \subsection{Structure of the article}
 
 \begin{itemize}

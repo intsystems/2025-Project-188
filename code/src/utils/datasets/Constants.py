@@ -1,10 +1,12 @@
 from pathlib import Path
 
-DIR_HYDRO_FILES = Path("data/HydroFiles/")
-DIR_METEO_SERIES_FEATURES = Path("data/Era5Land_MeteoSeries_feature/")
-DIR_HYDRO_STATIC_FEATURES = Path("data/HydroATLAS_static_feature.csv")
-ROOT_FOLDER = Path('/home/khuzin/Projects/2025-Project-188/experiments')
-ARTIFACTS_FOLDER = Path('/home/khuzin/Projects/2025-Project-188/experiments/artifacts')
+ROOT_FOLDER = Path('/home/khuzin/Projects/2025-Project-188/')
+DATA_FOLDER = ROOT_FOLDER / 'data'
+ARTIFACTS_FOLDER = DATA_FOLDER / 'artifacts'
+
+DIR_HYDRO_FILES = DATA_FOLDER / 'HydrologySeries_target/'
+DIR_METEO_SERIES_FEATURES = DATA_FOLDER / 'Era5Land_MeteoSeries_feature/'
+DIR_HYDRO_STATIC_FEATURES = DATA_FOLDER / 'HydroATLAS_static_feature.csv'
 
 STATIC_FEATURES = [
     "for_pc_sse",

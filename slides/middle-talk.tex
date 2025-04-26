@@ -1,0 +1,38 @@
+\documentclass[xcolor=table]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}  % or dolphin
+
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\usepackage{polyglossia}
+
+% \setbeameroption{show notes on second screen=right}
+
+% Language settings
+\setmainlanguage{russian}
+\setotherlanguage{english}
+
+\setmainfont{DejaVu Sans} % Use system font with Cyrillic support
+\newfontfamily\cyrillicfont{DejaVu Sans}
+\newfontfamily\cyrillicfontsf{DejaVu Sans}
+
+% Metadata
+\title{Влияние статических признаков на предсказание речного стока методами ML}
+\subtitle{Проблема эквифинальности в моделировании гидрологических процессов}
+\author{Эльдар Хузин}
+\institute{МФТИ}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Содержание}
+    \tableofcontents
+\end{frame}
+
+\input{bin/01-introduction}
+
+\end{document}

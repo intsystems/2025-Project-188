@@ -6,6 +6,11 @@ experiments/catboost_info
 **/*jupyterhub*.*
 **/*jupyterhub*
 **/poetry.lock
+*.parquet
+*.nc
+*.csv
+.dvc
+!.dvc/config
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
