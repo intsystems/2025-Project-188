@@ -308,60 +308,60 @@ and each of the tree is trained to predict the errors of the previous state mode
 
 % SARIMAX
 % ------------------------------------------------------
-\subsubsection{SARIMAX}
-\label{model:sarimax}
+% \subsubsection{SARIMAX}
+% \label{model:sarimax}
 
-Seasonal Autoregressive Integrated Moving-Average with eXogenous regressors (SARIMAX) extends the classical ARIMA family by explicitly modelling both seasonal dynamics and the influence of external predictors.
-After applying the non-seasonal difference operator \(\nabla^{d}\) and the seasonal difference operator \(\nabla_s^{D}\) (period \(s\)), the stationary series
+% Seasonal Autoregressive Integrated Moving-Average with eXogenous regressors (SARIMAX) extends the classical ARIMA family by explicitly modelling both seasonal dynamics and the influence of external predictors.
+% After applying the non-seasonal difference operator \(\nabla^{d}\) and the seasonal difference operator \(\nabla_s^{D}\) (period \(s\)), the stationary series
 
-\[
-    z_t \;=\; \nabla^{d}\nabla_s^{D}y_t
-\]
+% \[
+%     z_t \;=\; \nabla^{d}\nabla_s^{D}y_t
+% \]
 
-is assumed to follow the linear process
+% is assumed to follow the linear process
 
-\[
-    \small
-    \begin{aligned}
-        z_t & = \mu
-        + \sum_{i=1}^{p}  \phi_i\, z_{t-i}
-        + \sum_{i=1}^{P}  \Phi_i\, z_{t-i s}
-        + \sum_{i=1}^{q}  \theta_i\, \varepsilon_{t-i}
-        + \sum_{i=1}^{Q}  \Theta_i\, \varepsilon_{t-i s}
-        + \beta^{\top} x_t
-        + \varepsilon_t,                                                     \\
-            & \qquad\qquad \varepsilon_t \;\sim\; \mathcal{N}(0,\sigma^{2}),
-    \end{aligned}
-\]
+% \[
+%     \small
+%     \begin{aligned}
+%         z_t & = \mu
+%         + \sum_{i=1}^{p}  \phi_i\, z_{t-i}
+%         + \sum_{i=1}^{P}  \Phi_i\, z_{t-i s}
+%         + \sum_{i=1}^{q}  \theta_i\, \varepsilon_{t-i}
+%         + \sum_{i=1}^{Q}  \Theta_i\, \varepsilon_{t-i s}
+%         + \beta^{\top} x_t
+%         + \varepsilon_t,                                                     \\
+%             & \qquad\qquad \varepsilon_t \;\sim\; \mathcal{N}(0,\sigma^{2}),
+%     \end{aligned}
+% \]
 
-where
+% where
 
-* \(p,d,q\) – non-seasonal AR, difference and MA orders;
-* \(P,D,Q\) – seasonal counterparts on multiples of \(s\);
-* \(s\) – length of the seasonal cycle (e.g. \(s{=}365\) for daily data);
-* \(x_t\in\mathbb{R}^{d_{\mathrm{ex}}}\) – vector of exogenous forcings (rainfall, temperature, static catchment descriptors, …);
-* \(\beta\) – their coefficients, providing direct interpretability.
+% * \(p,d,q\) – non-seasonal AR, difference and MA orders;
+% * \(P,D,Q\) – seasonal counterparts on multiples of \(s\);
+% * \(s\) – length of the seasonal cycle (e.g. \(s{=}365\) for daily data);
+% * \(x_t\in\mathbb{R}^{d_{\mathrm{ex}}}\) – vector of exogenous forcings (rainfall, temperature, static catchment descriptors, …);
+% * \(\beta\) – their coefficients, providing direct interpretability.
 
-\paragraph{Estimation and model-selection}
-Parameters are obtained by maximising the Gaussian log-likelihood with a Kalman-filter evaluation of \(\varepsilon_{1:n}\).
-Candidate orders \((p,d,q,P,D,Q)\) are chosen from a grid constrained by \(p\!+\!q\!+\!P\!+\!Q\le 6\) and the best structure is selected via the small-sample-corrected AIC (AICc).
-The exogenous design matrix \(X\) is identical to that used by the machine-learning baselines to guarantee a **fair comparison**.
+% \paragraph{Estimation and model-selection}
+% Parameters are obtained by maximising the Gaussian log-likelihood with a Kalman-filter evaluation of \(\varepsilon_{1:n}\).
+% Candidate orders \((p,d,q,P,D,Q)\) are chosen from a grid constrained by \(p\!+\!q\!+\!P\!+\!Q\le 6\) and the best structure is selected via the small-sample-corrected AIC (AICc).
+% The exogenous design matrix \(X\) is identical to that used by the machine-learning baselines to guarantee a **fair comparison**.
 
-\paragraph{Role in the equifinality study}
-SARIMAX acts as the *linear–parametric* benchmark.
-Because the coefficients \(\beta_j\) quantify the marginal effect of each descriptor, it complements the feature-importance analyses of tree and neural models and sharpens our attribution of forecast skill.
-Its assumption of linearity, however, limits its ability to capture regime shifts and threshold-type responses known in rainfall–runoff dynamics.
+% \paragraph{Role in the equifinality study}
+% SARIMAX acts as the *linear–parametric* benchmark.
+% Because the coefficients \(\beta_j\) quantify the marginal effect of each descriptor, it complements the feature-importance analyses of tree and neural models and sharpens our attribution of forecast skill.
+% Its assumption of linearity, however, limits its ability to capture regime shifts and threshold-type responses known in rainfall–runoff dynamics.
 
-\paragraph{Hyper-parameters searched}
+% \paragraph{Hyper-parameters searched}
 
-\[
-    \begin{array}{ll}
-        p,d,q                    & \in \{0,\dots,3\},                       \\[2pt]
-        P,D,Q                    & \in \{0,\dots,2\},\; p{+}q{+}P{+}Q\le 6, \\[2pt]
-        s                        & \in \{7, 30, 365\}\text{ days},          \\[2pt]
-        \lambda_{\text{Box–Cox}} & \in [-0.5, 1].
-    \end{array}
-\]
+% \[
+%     \begin{array}{ll}
+%         p,d,q                    & \in \{0,\dots,3\},                       \\[2pt]
+%         P,D,Q                    & \in \{0,\dots,2\},\; p{+}q{+}P{+}Q\le 6, \\[2pt]
+%         s                        & \in \{7, 30, 365\}\text{ days},          \\[2pt]
+%         \lambda_{\text{Box–Cox}} & \in [-0.5, 1].
+%     \end{array}
+% \]
 
 % ### Complexity penalty in the unified optimisation (Eq.~\eqref{oprimization:task})
 
@@ -575,8 +575,10 @@ Experiments were executed on a machine \todo{describe the machine}. The complete
 
 % Experiment 1. QRF
 % —————————————————————————————————————————————————————————————————————————————————————————————————————————————
-\subsection{Experiment 1. QRF}
-\label{experiment:QRF}
+\subsection{Experiment 1. Random Forest}
+\label{experiment:random-forest}
+
+
 
 % Experiment 2. GBRT
 % —————————————————————————————————————————————————————————————————————————————————————————————————————————————
