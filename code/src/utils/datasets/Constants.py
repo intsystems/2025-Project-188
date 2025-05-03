@@ -1,6 +1,7 @@
 from pathlib import Path
 
-ROOT_FOLDER = Path('/home/khuzin/Projects/2025-Project-188/')
+# ROOT_FOLDER = Path('/home/khuzin/Projects/2025-Project-188/')
+ROOT_FOLDER = Path('/home/khuzin/Projects/2025-m1p-private/')
 DATA_FOLDER = ROOT_FOLDER / 'data'
 ARTIFACTS_FOLDER = DATA_FOLDER / 'artifacts'
 

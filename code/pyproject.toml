@@ -45,6 +45,9 @@ dependencies = [
     "shap (>=0.47.1,<0.48.0)",
     "xgboost (>=3.0.0,<4.0.0)",
     "fastparquet (>=2024.11.0,<2025.0.0)",
+    "distributed (>=2025.4.1,<2026.0.0)",
+    "bokeh (>=3.7.2,<4.0.0)",
+    "jupytext (>=1.17.1,<2.0.0)",
 ]
 
 [tool.poetry]
