@@ -6,7 +6,7 @@ authors = [
     {name = "Eldar Khuzin",email = "khuzin.e@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = "==3.11.12"
 dependencies = [
     "dask[complete] (>=2025.0.0,<2026.0.0)",
     "geopandas (>=1.0.1,<2.0.0)",
@@ -28,6 +28,8 @@ dependencies = [
     "bokeh (>=3.7.2,<4.0.0)",
     "jupytext (>=1.17.1,<2.0.0)",
     "polars (>=1.29.0,<2.0.0)",
+    "xgboost @ git+ssh://git@github.com/dmlc/xgboost.git#subdirectory=python-package",
+    "isort (>=6.0.1,<7.0.0)",
 ]
 
 [tool.poetry]
@@ -36,6 +38,8 @@ packages = [
 ]
 package-mode=true
 
+[tool.poetry.dependencies]
+xgboost = {allow-prereleases = true}
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
