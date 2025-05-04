@@ -8,7 +8,8 @@ authors = [
 readme = "README.md"
 requires-python = "==3.11.12"
 dependencies = [
-    "dask[complete] (>=2025.0.0,<2026.0.0)",
+    "dask[complete] (==2024.12.1)",
+    "distributed (==2024.12.1)",
     "geopandas (>=1.0.1,<2.0.0)",
     "scipy (>=1.15.2,<2.0.0)",
     "marimo (>=0.11.21,<0.12.0)",
@@ -28,7 +29,7 @@ dependencies = [
     "bokeh (>=3.7.2,<4.0.0)",
     "jupytext (>=1.17.1,<2.0.0)",
     "polars (>=1.29.0,<2.0.0)",
-    "xgboost @ git+ssh://git@github.com/dmlc/xgboost.git#subdirectory=python-package",
+    "xgboost (==2.1.4)",
     "isort (>=6.0.1,<7.0.0)",
 ]
 
