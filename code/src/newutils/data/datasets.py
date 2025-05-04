@@ -1,6 +1,7 @@
 from oldutils.datasets import ARTIFACTS_FOLDER
 import polars as pl
 import dask.dataframe as dd
+import warnings
 
 PATH_MERGED_DATASETS = ARTIFACTS_FOLDER / "merged_datasets"
 FILENAME_TRAIN_IDS = "train_file_ids.csv"
@@ -13,7 +14,7 @@ def load_train_subset():
     Returns:
         dask.dataframe: dataframe of readed files.
     """
-    train_df = pl.read_csv(PATH_MERGED_DATASETS / FILENAME_TRAIN_IDS).sample(5)
+    train_df = pl.read_csv(PATH_MERGED_DATASETS / FILENAME_TRAIN_IDS).sample(8, seed=30)
     file_ids = train_df["file_id"].to_list()
     paths = [PATH_MERGED_DATASETS / f"{file_id}.parquet" for file_id in file_ids]
     return dd.read_parquet(paths).set_index(COL_GAUGE_ID)
@@ -32,7 +33,8 @@ def _gen_add_lags(column, lags, store_new_columns=None):
     def _add_lags(pdf):
         pdf = pdf.sort_values(by=["date"])
         for lag in lags:
-            pdf[_gen_lag_name(column, lag)] = pdf[column].shift(lag)
+            with warnings.catch_warnings(record=True) as caught_warnings:
+                pdf[_gen_lag_name(column, lag)] = pdf[column].shift(lag)
         return pdf
 
     return _add_lags
