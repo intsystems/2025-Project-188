@@ -13,7 +13,7 @@ def load_train_subset():
     Returns:
         dask.dataframe: dataframe of readed files.
     """
-    train_df = pl.read_csv(PATH_MERGED_DATASETS / FILENAME_TRAIN_IDS).sample(10)
+    train_df = pl.read_csv(PATH_MERGED_DATASETS / FILENAME_TRAIN_IDS).sample(5)
     file_ids = train_df["file_id"].to_list()
     paths = [PATH_MERGED_DATASETS / f"{file_id}.parquet" for file_id in file_ids]
     return dd.read_parquet(paths).set_index(COL_GAUGE_ID)
