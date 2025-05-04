@@ -8,15 +8,15 @@ FILENAME_TRAIN_IDS = "train_file_ids.csv"
 COL_GAUGE_ID = "gauge_id"
 
 
-def load_train_subset():
+def load_train_subset(train_subset=None):
     """Load train subset based on 'Prepare Dataserts.ipynb' results
 
     Returns:
         dask.dataframe: dataframe of readed files.
     """
-    train_df = pl.read_csv(PATH_MERGED_DATASETS / FILENAME_TRAIN_IDS).sample(
-        20, seed=30
-    )
+    train_df = pl.read_csv(PATH_MERGED_DATASETS / FILENAME_TRAIN_IDS)
+    if train_subset is not None:
+        train_df = train_df.sample(train_subset, seed=30)
     file_ids = train_df["file_id"].to_list()
     paths = [PATH_MERGED_DATASETS / f"{file_id}.parquet" for file_id in file_ids]
     return dd.read_parquet(paths).set_index(COL_GAUGE_ID)
