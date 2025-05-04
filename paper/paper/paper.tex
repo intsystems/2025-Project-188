@@ -115,7 +115,7 @@
 \section{Introduction}
 \label{sec:introduction}
 
-\todo[inline]{Add models from the problem statment section as ``Quantile Random Forest (QRF)'', ``Gradient Boosting Forest (GBF)'' and so on.}
+\todo[inline]{Add models from the problem statment section as ``Quantile Random Forest (QRF)'', ``Gradient‑Boosted Trees (GBT)'' and so on.}
 
 %% ============================================================================================================
 %% Problem Statement
@@ -134,7 +134,7 @@
 
 
 % Optimization statement
-% —————————————————————————————————————————————————————————————————————————————————————————————————————————————
+% ————————————————————————————————————————————————————————————————————————————
 \subsection{Optimization statement}
 
 In general, in each experiment we find the optimal model \(\BestModel\) s.t.
@@ -173,12 +173,12 @@ In our work we choose\todo{Link to article and explanation why MAPE} \(\ell\) as
     \tag{Opt.~task}
 \end{equation}
 
-% —————————————————————————————————————————————————————————————————————————————————————————————————————————————
+% ————————————————————————————————————————————————————————————————————————————
 % End of 'Optimization statement'
 
 
 % Model's description
-% —————————————————————————————————————————————————————————————————————————————————————————————————————————————
+% ————————————————————————————————————————————————————————————————————————————
 \subsection{Model's descriptions}
 
 % Regression trees
@@ -236,7 +236,7 @@ Then, once the tree structure is fixed, we assign each leaf \(l\) the weight
     -\frac{G_l}{H_l + \lambda},
     \quad
     \text{where }
-    G_l = \sum_{i \in R_l} g_i,\;
+    G_l = \sum_{i \in R_l} g_i,
     H_l = \sum_{i \in R_l} h_i.
 \]
 % ------------------------------------------------------
@@ -306,81 +306,61 @@ and each of the tree is trained to predict the errors of the previous state mode
 % ------------------------------------------------------
 % End of 'Gradient Boosting'
 
-% SARIMAX
+% SARIMA
 % ------------------------------------------------------
-% \subsubsection{SARIMAX}
-% \label{model:sarimax}
+\subsubsection{SARIMA}
+\label{model:sarima}
 
-% Seasonal Autoregressive Integrated Moving-Average with eXogenous regressors (SARIMAX) extends the classical ARIMA family by explicitly modelling both seasonal dynamics and the influence of external predictors.
-% After applying the non-seasonal difference operator \(\nabla^{d}\) and the seasonal difference operator \(\nabla_s^{D}\) (period \(s\)), the stationary series
+Seasonal Autoregressive (AR) Integrated Moving Average (MA) (SARIMA) is the extention of ARIMA model (combination of SARIMA).
 
-% \[
-%     z_t \;=\; \nabla^{d}\nabla_s^{D}y_t
-% \]
+Let's denotes
+\begin{itemize}
+    \item \(L\) --- back‑shift (lag) operator, means \(L\,y_{t}=y_{t-1}\);
+    \item \(a(L)=1-a_{1}L-\dots-a_{p}L^{p}\) (AR polynomial);
+    \item \(b(L)=1-b_{1}L-\dots-b_{q}L^{q}\) (MA polynomial);
+    \item \(d\) --- number of non‑seasonal differences needed for stationarity.
+\end{itemize}
 
-% is assumed to follow the linear process
+% ARIMA
+% . . . . . . . . . . . . . .
+\paragraph{ARIMA \texorpdfstring{\((p,d,q)\)}{(p,d,q)}}
 
-% \[
-%     \small
-%     \begin{aligned}
-%         z_t & = \mu
-%         + \sum_{i=1}^{p}  \phi_i\, z_{t-i}
-%         + \sum_{i=1}^{P}  \Phi_i\, z_{t-i s}
-%         + \sum_{i=1}^{q}  \theta_i\, \varepsilon_{t-i}
-%         + \sum_{i=1}^{Q}  \Theta_i\, \varepsilon_{t-i s}
-%         + \beta^{\top} x_t
-%         + \varepsilon_t,                                                     \\
-%             & \qquad\qquad \varepsilon_t \;\sim\; \mathcal{N}(0,\sigma^{2}),
-%     \end{aligned}
-% \]
+\begin{equation}
+    (1-L)^{d}\,y_{t} = \mu + \frac{b(L)}{a(L)}\,\varepsilon_{t},
+\end{equation}
+% . . . . . . . . . . . . . .
+% ARIMA
 
-% where
+% SARIMA
+% . . . . . . . . . . . . . .
+\paragraph{Add seasonality \texorpdfstring{\(\Rightarrow\)}{--- get} SARIMA
+    \texorpdfstring{\((p,d,q)\!\times\!(P,D,Q)_{s}\)}{(p,d,q) x (P,D,Q)\_s}}
 
-% * \(p,d,q\) – non-seasonal AR, difference and MA orders;
-% * \(P,D,Q\) – seasonal counterparts on multiples of \(s\);
-% * \(s\) – length of the seasonal cycle (e.g. \(s{=}365\) for daily data);
-% * \(x_t\in\mathbb{R}^{d_{\mathrm{ex}}}\) – vector of exogenous forcings (rainfall, temperature, static catchment descriptors, …);
-% * \(\beta\) – their coefficients, providing direct interpretability.
-
-% \paragraph{Estimation and model-selection}
-% Parameters are obtained by maximising the Gaussian log-likelihood with a Kalman-filter evaluation of \(\varepsilon_{1:n}\).
-% Candidate orders \((p,d,q,P,D,Q)\) are chosen from a grid constrained by \(p\!+\!q\!+\!P\!+\!Q\le 6\) and the best structure is selected via the small-sample-corrected AIC (AICc).
-% The exogenous design matrix \(X\) is identical to that used by the machine-learning baselines to guarantee a **fair comparison**.
-
-% \paragraph{Role in the equifinality study}
-% SARIMAX acts as the *linear–parametric* benchmark.
-% Because the coefficients \(\beta_j\) quantify the marginal effect of each descriptor, it complements the feature-importance analyses of tree and neural models and sharpens our attribution of forecast skill.
-% Its assumption of linearity, however, limits its ability to capture regime shifts and threshold-type responses known in rainfall–runoff dynamics.
-
-% \paragraph{Hyper-parameters searched}
-
-% \[
-%     \begin{array}{ll}
-%         p,d,q                    & \in \{0,\dots,3\},                       \\[2pt]
-%         P,D,Q                    & \in \{0,\dots,2\},\; p{+}q{+}P{+}Q\le 6, \\[2pt]
-%         s                        & \in \{7, 30, 365\}\text{ days},          \\[2pt]
-%         \lambda_{\text{Box–Cox}} & \in [-0.5, 1].
-%     \end{array}
-% \]
-
-% ### Complexity penalty in the unified optimisation (Eq.~\eqref{oprimization:task})
-
-% \[
-%     \Omega(f) \;=\; k\,\sigma^{2}, \qquad
-%     k = \text{number of estimated parameters}.
-% \]
-
-% ### Empirical performance
-% Despite a median AICc improvement of \(\approx 18\) points over the naïve random-walk baseline, SARIMAX still underperforms the nonlinear learners by \(5\)–\(15\%\) in MAPE across basins, underscoring that the residual forecast skill originates mainly from nonlinear interactions rather than linear dynamics.
+\begin{equation}
+    (1-L)^{d}(1-L^{s})^{D}\,y_{t} =
+    \mu +
+    \frac{b(L)\,B(L^{s})}{a(L)\,A(L^{s})}\,\varepsilon_{t},
+\end{equation}
+where
+\begin{itemize}
+    \item \(s\) — seasonal period;
+    \item \((P,D,Q)\) — AR, differencing, and MA orders of the \emph{seasonal} component:
+          \begin{itemize}
+              \item \(A(L) = 1 - A_1\,L^{s} - A_2\,L^{2s} - \cdots - A_P\,L^{Ps}\);
+              \item \(B(L) = 1 - B_1\,L^{s} - B_2\,L^{2s} - \cdots - B_Q\,L^{Qs}\).
+          \end{itemize}
+\end{itemize}
+% . . . . . . . . . . . . . .
+% SARIMA
 
 % ------------------------------------------------------
-% End of 'SARIMAX'
+% End of 'SARIMA'
 
-% —————————————————————————————————————————————————————————————————————————————————————————————————————————————
+% ————————————————————————————————————————————————————————————————————————————
 % End of 'Model's description'
 
 % Metrics descriptions
-% —————————————————————————————————————————————————————————————————————————————————————————————————————————————
+% ————————————————————————————————————————————————————————————————————————————
 \subsection{Evaluation Metrics Used}
 
 \paragraph{Notation}
@@ -428,100 +408,6 @@ Originally developed in hydrology, the NSE evaluates the predictive power of hyd
     \item NSE \( < 0 \) suggests the model predictions are worse than the mean.
 \end{itemize}
 
-% Models descriptions
-% —————————————————————————————————————————————————————————————————————————————————————————————————————————————
-\subsection{Models Selected for Comparison}
-
-% Tree based models
-% -—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-
-\subsubsection{Tree based models}
-
-% Trees in Quantile Random Forest and Gradient Boosted Regression Tree
-% ------------------------------------------------------------------------------------------------------------
-\paragraph{Decision Tree Regression}
-A single regression tree (RT) is a binary tree which partitions the feature space into disjoint regions and assigns a constant prediction to each region. Formally, let
-\[
-    q: \mathbb{R}^d \;\to\; \{1,2,\dots,T\}
-\]
-be a function that maps an \(x\) to one of \(T\) leaves. Each leaf \(t\) has an associated output value \(w_t\). Thus, the RT is
-\[
-    f(x) \;=\; w_{\,q(x)}.
-\]
-
-The function \(q\) is a result of combinations of binary functions, which recursively choose of left and right children based on feature index \(j\) and threshold \(s\) until get the end of the tree.
-\todo[inline]{Tree picture}
-
-The tree is grown by recursively selecting splits \(\{(j,s)\}\) that minimize an impurity measure (e.g., squared error) over the training set. Pruning or regularization (e.g., minimum leaf size, maximum depth) controls overfitting.
-
-% Trees in Quantile Random Forest and Gradient Boosted Regression Tree
-% ------------------------------------------------------------------------------------------------------------
-\paragraph{XGBoost Trees (XGBtree)}
-We employ eXtreme Gradient Boosting (XGBoost) decision-tree ensembles \parencite{chenXGBoostScalableTree2016a}. Let the ensemble consist of \(M\) trees, so that for an input \(x\in\mathbb{R}^d\):
-\[
-    \hat{y} = \sum_{m=1}^M f_m(x),
-    \quad
-    f_m(x) = w^{(m)}_{q^{(m)}(x)},
-\]
-where for each \(m\):
-\begin{itemize}
-    \item \(q^{(m)}: \mathbb{R}^d \to \{1,\dots,T_m\}\) routes \(x\) to one of \(T_m\) leaves,
-    \item \(w^{(m)} = (w^{(m)}_1,\dots,w^{(m)}_{T_m})\) are the leaf weights.
-\end{itemize}
-The training objective is
-\[
-    \mathcal{L} = \sum_{i=1}^n \ell\bigl(y_i,\hat{y}_i\bigr)
-    + \sum_{m=1}^M \Bigl(\gamma\,T_m + \tfrac{1}{2}\lambda\sum_{j=1}^{T_m}\bigl(w^{(m)}_j\bigr)^2\Bigr),
-\]
-where \(\ell\) is the loss (e.g., squared error or percentage error), \(\gamma\) penalizes each leaf, and \(\lambda\) is the \(L_2\)-regularization on leaf weights. Trees are added sequentially by fitting each \(f_m\) to the negative gradient of the loss with respect to the current prediction, yielding an efficient, regularized boosting procedure.
-
-
-\todoask{Is that enought for tree desription?}
-
-% Quantile Random Forest (QRF)
-% ------------------------------------------------------------------------------------------------------------
-\paragraph{Quantile Random Forest (QRF)}\cite{meinshausenQuantileRegressionForests2006}
-
-Let:
-\begin{itemize}
-    \item \(\mathcal{T}_1, \dots, \mathcal{T}_B\) be the trees in the forest;
-    \item \(L_b(x)\) be the leaf node in tree \(b\) where \(x\) falls;
-    \item \(\mathcal{I}_b(x)\) denote the indices of training samples in \(L_b(x)\).
-\end{itemize}
-
-QRF extends Random Forest regression to estimate the full conditional distribution of \(Y\) as a function of the predictor variable \(X\). For an input \(x\), each tree \(T_b\) assigns \(x\) to a leaf \(L_b(x)\), collecting responses \(Y_i\) for indices \(i \in \mathcal{I}_b(x)\) and forming a weighted empirical distribution.
-
-The conditional CDF is estimated as
-\[
-    \widehat{F}(y \mid x) = \sum_{i=1}^{n} \alpha_i(x) \cdot \mathbf{1}(Y_i \leq y),
-\]
-with weights
-\todo{Correct the formula based on desription from \cite{meinshausenQuantileRegressionForests2006}}
-\[
-    \alpha_i(x)
-    =
-    \frac{1}{B}
-    \sum_{b=1}^B
-    \frac{\Indicator{i \in \mathcal{I}_b(x)}}
-    {\SetPower{\set{j \in L_b(x)}}}.
-\]
-From the weighted CDF, the \(\alpha\)-quantile is given by
-\[
-    \widehat{Q}_{\alpha}(x) = \inf{\set{y : \widehat{F}(y \mid X=x) \ge \alpha }}.
-\]
-
-% Gradient Boosted Regression Tree (GBRT)
-% ------------------------------------------------------------------------------------------------------------
-\paragraph{Gradient Boosted Regression Tree (GBRT)}\cite{friedmanGreedyFunctionApproximation2001}
-
-\todo{Simple describe the idea of gradient boosting.}
-
-% Primary time-series models
-% -—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-—-
-\subsubsection{Primary time-series models}
-
-\paragraph{SARIMAX}
-
-
 %% ============================================================================================================
 %% Methodology
 %% ============================================================================================================
@@ -544,7 +430,7 @@ From the weighted CDF, the \(\alpha\)-quantile is given by
 \label{sec:computational-experiment}
 
 % Software
-% —————————————————————————————————————————————————————————————————————————————————————————————————————————————
+% ————————————————————————————————————————————————————————————————————————————
 \subsection*{Software}
 % \begin{refcontext}[style=numeric]
 All experiments were conducted in Python 3.12 using the following open-source libraries:
@@ -559,7 +445,7 @@ Experiments were executed on a machine \todo{describe the machine}. The complete
 % \end{refcontext}
 
 % Datasets
-% —————————————————————————————————————————————————————————————————————————————————————————————————————————————
+% ————————————————————————————————————————————————————————————————————————————
 \subsection*{Datasets}
 \todo{todo}
 
@@ -570,24 +456,27 @@ Experiments were executed on a machine \todo{describe the machine}. The complete
 \todo{todo}
 
 \subsubsection*{Static features}
-
 \todo{todo}
 
 % Experiment 1. QRF
-% —————————————————————————————————————————————————————————————————————————————————————————————————————————————
+% ————————————————————————————————————————————————————————————————————————————
 \subsection{Experiment 1. Random Forest}
 \label{experiment:random-forest}
 
-
-
 % Experiment 2. GBRT
-% —————————————————————————————————————————————————————————————————————————————————————————————————————————————
+% ————————————————————————————————————————————————————————————————————————————
 \subsection{Experiment 2. GBRT}
 \label{experiment:GBRT}
 
-% Experiment 2. LSTM
-% —————————————————————————————————————————————————————————————————————————————————————————————————————————————
-\subsection{Experiment 3. LSTM}
+% Experiment 3. LSTM
+% ————————————————————————————————————————————————————————————————————————————
+\subsection{Experiment 3. SARIMAX}
+\label{experiment:SARIMAX}
+
+
+% Experiment 4. LSTM
+% ————————————————————————————————————————————————————————————————————————————
+\subsection{Experiment 4. LSTM}
 \label{experiment:LSTM}
 
 %% ============================================================================================================
