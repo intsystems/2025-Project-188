@@ -33,7 +33,11 @@ dependencies = [
     "xgboost (==2.1.4)",
     "isort (>=6.0.1,<7.0.0)",
     "dask_cuda (==25.02.00)",
+    "poetry2conda (>=0.3.0,<0.4.0)",
 ]
+
+[tool.poetry2conda]
+name = "pro-1-experiments-conda"
 
 [tool.poetry]
 packages = [
