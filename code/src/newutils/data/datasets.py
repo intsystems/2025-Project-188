@@ -58,6 +58,17 @@ def load_train_subset_fixed_per_file(train_subset=None, n=370):
     return ddf
 
 
+def get_train_gauge_ids():
+    train_df = pl.read_csv(PATH_MERGED_DATASETS / FILENAME_TRAIN_IDS)
+    file_ids = train_df["file_id"].to_list()
+    return file_ids
+
+
+def load_train_gauge(gauge_id):
+    paths = [PATH_MERGED_DATASETS / f"{gauge_id}.parquet"]
+    return dd.read_parquet(paths)
+
+
 def load_train_subset(train_subset=None):
     """Load train subset based on 'Prepare Dataserts.ipynb' results
 
