@@ -1,4 +1,5 @@
 # My ignores
+artifacts
 !.vscode/settings.json
 .build
 experiments/data
