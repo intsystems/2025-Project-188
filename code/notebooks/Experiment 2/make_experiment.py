@@ -1,24 +1,19 @@
-from dask.distributed import Client, LocalCluster, wait
-import xgboost.dask as dxgb
-import dask.dataframe as dd
-from datetime import datetime
 import logging
+from datetime import datetime
 
-from newutils.math import pseudo_mape_obj
+import dask.dataframe as dd
+import numpy as np
+import pandas as pd
+import xgboost.dask as dxgb
+from dask.distributed import Client, LocalCluster, wait
 from newutils.data.datasets import (
     add_lags,
     load_train_subset,
     load_train_subset_fixed_per_file,
 )
-
-import pandas as pd
-import numpy as np
-
+from newutils.math import pseudo_mape_obj
+from oldutils.datasets import STATIC_FEATURES, HydroStaticFeaturesFiles
 from oldutils.types import TimeRange
-from oldutils.datasets import (
-    STATIC_FEATURES,
-    HydroStaticFeaturesFiles,
-)
 
 
 class Experiment:
@@ -52,13 +47,17 @@ class Experiment:
         self._persist()
 
     def _persist(self):
+        self.logger.info("Persist.")
         self.df = self.client.persist(self.df)
         wait(self.df)
 
     def _load_dataset(self, num_load=8):
         self.logger.info("Load driver data.")
         self.df = load_train_subset(num_load)
-        self.df = self.df.sample(frac=0.08)
+        self.df = self.df.sample(frac=0.1)
+        # Only for debug! #TODO
+        self._repartition("100MB")
+        # Remove string above!
         self._persist()
 
     def _clear_dataset(self):
@@ -116,8 +115,6 @@ class Experiment:
             self.client,
             params,
             self.dtrain,
-            num_boost_round=1000,
-            verbose_eval=50,
             evals=[(self.dtrain, "train")],
             obj=pseudo_mape_obj,
         )
