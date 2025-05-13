@@ -1,6 +1,8 @@
+from .Dataset import Dataset
 from .datasets import *
 
 __all__ = [
+    "Dataset",
     "pseudo_mape_obj",
     "read_first_n",
     "load_train_subset_fixed_per_file",
