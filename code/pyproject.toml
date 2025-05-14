@@ -12,28 +12,22 @@ dependencies = [
     "distributed (==2025.4.1)",
     "geopandas (>=1.0.1,<2.0.0)",
     "scipy (>=1.15.2,<2.0.0)",
-    "marimo (>=0.11.21,<0.12.0)",
     "matplotlib (>=3.10.1,<4.0.0)",
     "tqdm (>=4.67.1,<5.0.0)",
-    "black (>=25.1.0,<26.0.0)",
-    "nbformat (>=5.10.4,<6.0.0)",
-    "darts (>=0.34.0,<0.35.0)",
     "xarray (>=2025.1.2,<2026.0.0)",
     "netcdf4 (>=1.7.2,<2.0.0)",
     "seaborn (>=0.13.2,<0.14.0)",
-    "tabulate (>=0.9.0,<0.10.0)",
     "ipykernel (>=6.29.5,<7.0.0)",
     "fastcluster (>=1.2.6,<2.0.0)",
     "shap (>=0.47.1,<0.48.0)",
     "fastparquet (>=2024.11.0,<2025.0.0)",
     "bokeh (==3.7.2)",
     "panel (==1.6.3)",
-    "jupytext (>=1.17.1,<2.0.0)",
     "polars (>=1.29.0,<2.0.0)",
     "xgboost (==2.1.4)",
-    "isort (>=6.0.1,<7.0.0)",
     # "dask_cuda (==25.02.00)",
-    "poetry2conda (>=0.3.0,<0.4.0)",
+    "iprogress (>=0.4,<0.5)",
+    "ipywidgets (>=8.1.7,<9.0.0)",
 ]
 
 [tool.poetry2conda]
@@ -41,7 +35,10 @@ name = "pro-1-experiments-conda"
 
 [tool.poetry]
 packages = [
-    {include = "utils", from = "src"}
+    {include = "utils", from = "src"},
+    {include = "newutils", from = "src"},
+    {include = "oldutils", from = "src"},
+    {include = "config", from = "src"},
 ]
 package-mode=true
 

@@ -1,28 +1,60 @@
-version: '3.8'
+version: '3.9'
 services:
   scheduler:
-    image: daskdev/dask:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
     command: dask scheduler
+    volumes:
+      - ../data:/home/khuzin/Projects/2025-Project-188/data:rw
+      - ./src:/opt/app/src:rw
     ports:
-      - "8786:8786"   # Dask RPC
-      - "8787:8787"   # Dashboard
+      - "8786:8786"
+      - "8787:8787"
     networks:
       - dask-net
 
   worker:
-    image: daskdev/dask:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
     command: dask worker tcp://scheduler:8786
     depends_on:
       - scheduler
     networks:
       - dask-net
+    volumes:
+      - ../data:/home/khuzin/Projects/2025-Project-188/data:rw
+      - ./src:/opt/app/src:rw
     deploy:
-      replicas: 2
+      replicas: 1
       resources:
         limits:
-          cpus: '2.00'
-          memory: 2.5G
+          cpus: '1.00'
+          memory: 6G
 
+  db:
+    image: postgres:17
+    container_name: postgres
+    volumes:
+      - ../data/pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER:     "khuzin"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB:       "project"
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U khuzin -d project"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
 networks:
   dask-net:
     driver: bridge

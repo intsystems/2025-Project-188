@@ -1,10 +1,8 @@
+from .Constants import ARTIFACTS_FOLDER, ROOT_FOLDER
 from .HydroFiles import HydroFiles
-from .MeteoSeriesFeaturesFiles import MeteoSeriesFeaturesFiles
 from .HydroStaticFeaturesFiles import HydroStaticFeaturesFiles
+from .MeteoSeriesFeaturesFiles import MeteoSeriesFeaturesFiles
 from .Plots import plot_meteo_series
-from .Constants import ROOT_FOLDER
-from .Constants import ARTIFACTS_FOLDER
-from .Constants import STATIC_FEATURES
 
 __all__ = [
     "HydroFiles",
@@ -13,5 +11,4 @@ __all__ = [
     "plot_meteo_series",
     "ROOT_FOLDER",
     "ARTIFACTS_FOLDER",
-    "STATIC_FEATURES"
 ]
