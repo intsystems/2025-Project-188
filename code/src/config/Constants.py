@@ -1,3 +1,7 @@
+from pathlib import Path
+
+ARTIFACTS = Path("artifacts")
+
 STATIC_FEATURES = [
     "for_pc_sse",  # Forest Cover Extent
     "crp_pc_sse",  # Cropland Extent

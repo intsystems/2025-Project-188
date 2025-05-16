@@ -1,0 +1,157 @@
+% Compile with XeLaTeX or LuaLaTeX for fontspec support
+\documentclass{article}
+
+\usepackage{arxiv}
+\usepackage{fontspec}
+\setmainfont{Linux Libertine O}
+% \setmainfont{Inter}
+
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+\setotherlanguage{russian}
+
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts, amssymb, amsmath, amsthm}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{forest}
+
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{doi}
+\usepackage{caption}
+
+\usepackage[backend=biber, style=authoryear]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage{ragged2e}
+\usepackage{braket}
+\usepackage[colorinlistoftodos]{todonotes}
+
+% Custom TODO commands
+\newcommand{\todoask}[1]{\todo[color=blue!30]{\textbf{Ask:} #1}}
+\newcommand{\todocheck}[1]{\todo[color=green!30]{\textbf{Check:} #1}} 
+\newcommand{\todoread}[1]{\todo[color=orange!30]{\textbf{Read:} #1}} 
+\newcommand{\todocomment}[1]{\todo[color=purple!30]{\textbf{Comment:} #1}}
+
+%% ============================================================================================================
+%% Math commands and symbols
+%% ============================================================================================================
+\newcommand{\RMSE}[2]{\operatorname{RMSE}{\left(#1, #2\right)}}
+\newcommand{\MAE}[2]{\operatorname{MAE}{\left(#1, #2\right)}}
+\newcommand{\MAPE}[2]{\operatorname{MAPE}{\left(#1, #2\right)}}
+\newcommand{\NSE}[2]{\operatorname{NSE}{\left(#1, #2\right)}}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand{\Indicator}[1]{\mathbf{1}_{\set{#1}}}
+\newcommand{\SetPower}[1]{\##1}
+
+\newcommand{\Reals}{\mathbb{R}}
+
+\newcommand{\Ell}{\mathcal{L}}
+\newcommand{\Dataset}{\mathcal{D}}
+\newcommand{\Models}{\mathcal{F}}
+\newcommand{\Model}{\hat{f}}
+\newcommand{\BestModel}{f^*}
+
+
+%% ============================================================================================================
+%% Metadata
+%% ============================================================================================================
+\title{Comparative Analysis of Data-Driven Approaches for Hydrological Forecasting}
+
+\author{
+    Khuzin Eldar \\
+    Chair of Data Analysis\\
+    Moscow Institute of Physics and Technology\\
+    Moscow, Russia \\
+    \texttt{khuzin.er@phystech.su} \\
+    \And
+    Novikov Ivan \\
+    Affiliation \\
+    Address \\
+    \texttt{email} \\
+    \And
+    Abramov Dmitrii \\
+    Affiliation \\
+    Address \\
+    \texttt{email}
+}
+
+\date{}
+
+\hypersetup{
+    pdftitle={Comparative Analysis of Data-Driven Approaches for Hydrological Forecasting},
+    pdfsubject={cs.LG},
+    pdfauthor={Eldar Khuzin, Novikov Ivan, Abramov Dmitrii},
+    pdfkeywords={Flood discharge, Rainfall-runoff modeling, More}
+}
+
+%% ============================================================================================================
+%% Document begin
+%% ============================================================================================================
+\begin{document}
+\sloppy
+\justifying
+
+\maketitle
+
+%% ============================================================================================================
+%% Abstract
+%% ============================================================================================================
+
+\begin{abstract}
+    In this article, we address the problem of equifinality in data-driven hydrological modeling — when different feature sets or model architectures yield similar predictive efficiency. We investigate the influence of static catchment features on predictions made by traditional models, recurrent neural networks, and transformers across various river basins in Eurasia. By analyzing feature importance and model behavior, we identify dominant predictors and assess the practicality of employing complex models in terms of interpretability and computational cost. This approach provides insights into the trade-offs between model complexity and predictive robustness in the presence of equifinality.
+\end{abstract}
+
+
+\keywords{Flood discharge \and Rainfall-runoff modeling \and More}
+
+\listoftodos[List of suggested changes]
+
+%% ============================================================================================================
+%% Introduction
+%% ============================================================================================================
+\input{sections/01. introduction.tex}
+
+%% ============================================================================================================
+%% Data and Study Area
+%% ============================================================================================================
+\input{sections/02. data and study area.tex}
+
+%% ============================================================================================================
+%% Methods
+%% ============================================================================================================
+\input{sections/03. methods.tex}
+
+%% ============================================================================================================
+%% Computational experiment
+%% ============================================================================================================
+\input{sections/04. computational experiment.tex}
+
+%% ============================================================================================================
+%% Results
+%% ============================================================================================================
+\input{sections/05. results.tex}
+
+%% ============================================================================================================
+%% Discussion
+%% ============================================================================================================
+\input{sections/06. discussion.tex}
+
+%% ============================================================================================================
+%% Conclusion
+%% ============================================================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+%% ============================================================================================================
+%% Bibliography
+%% ============================================================================================================
+\printbibliography
+
+\end{document}

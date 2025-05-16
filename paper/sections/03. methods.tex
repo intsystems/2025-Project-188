@@ -1,0 +1,335 @@
+%% ============================================================================================================
+%% Methods
+%% ============================================================================================================
+\section{Methods}
+\label{sec:methods}
+
+\todo[inline]{Общий pipeline}
+
+% Problem statement and notation
+% ————————————————————————————————————————————————————————————————————————————
+\subsection{Problem Statement and Notation}
+
+We address a regression problem where we aim to predict a target from a set of features.
+
+\paragraph{Notation}
+\begin{itemize}
+    \item Let \(y \in \Reals^n\) and \( y_i \in \Reals \) denote the target; \(x \in \Reals^{n \times d}\) and \( x_i \in \Reals^d \) denote \(d\) features associated with \( y_i \), where \(n\) is the number of samples;
+    \item Let the dataset be \( \Dataset = \set{(x_i, y_i) \mid i \in \overline{1, n}} \) --- set of \(n\) pairs for features and targets.
+    \item Let the models class be denoted as \(\Models\);
+    \item Let \( \hat{y}_i \coloneqq f(x_i),\, f \in \Models\) denotes estimation of \( y_i \) based on \( x_i \);
+    \item Let assume \(\hat{y} \coloneqq \left( \hat{y}_1, \dots, \hat{y}_n \right) = \left( f(x_1), \dots, f(x_n) \right)\).
+\end{itemize}
+% ————————————————————————————————————————————————————————————————————————————
+% End of 'Problem statement and notation'
+
+% Optimization statement
+% ————————————————————————————————————————————————————————————————————————————
+\subsection{Optimization statement}
+
+In general, in each experiment we find the optimal model \(\BestModel\) s.t.
+
+\begin{equation}
+    \BestModel
+    =
+    \argmin\limits_{f \in \Models}{\left( \Ell(f, \Dataset) + \Omega(f) \right)},
+    \label{oprimization:general-task}
+\end{equation}
+
+where \( \Ell(f, \Dataset) \) denotes the empirical loss of model \(f\) on dataset \(\Dataset\), and \( \Omega(f) \) is a regularization term penalizing model complexity.
+
+Let \(\ell(\cdot, \cdot)\) denotes the actual loss function, so \(\Ell(f, \Dataset) = \ell(y, \hat{y}) = \frac{1}{n}{\sum\limits_{i=1}^{n}{\ell(y_i, \hat{y}_i)}} \).
+
+In our work we choose\todo{Link to article and explanation why MAPE} \(\ell\) as a mean absolute percentage error (\ref{metric:mape}), so \ref{oprimization:general-task} can be rewriten as
+
+\begin{equation}
+    \BestModel
+    =
+    \argmin\limits_{
+        f \in \Models
+    }{
+        \left(
+        \sum_{i=1}^{n} \left| \frac{y_i - f({x_i})}{y_i} \right| + \Omega(f)
+        \right)
+    }.
+    \label{oprimization:task}
+    \tag{Opt.~task}
+\end{equation}
+
+\subsubsection{Pseudo-MAPE Objective}
+
+But standard \ref{metric:mape} is non-differentiable at \(y_i=\hat y_i\) and yields unbounded gradients as \( y_i \to 0\).
+To obtain smoother, more stable updates in gradient-based learners, we define a pseudo-MAPE loss with smoothing parameter \(\delta>0\):
+\[
+    L_\delta(r)
+    = \sqrt{r^2 + \delta^2},\quad
+    r_i = \frac{\hat y_i - y_i}{y_i}\,.
+\]
+Its gradient and Hessian (needed for XGBoost’s custom objective) are
+\[
+    g_i = \frac{r_i}{y_i\,\sqrt{r_i^2 + \delta^2}},\quad
+    h_i = \frac{\delta^2}{y_i^2\,\bigl(r_i^2 + \delta^2\bigr)^{3/2}}.
+\]
+In our experiments we set \(\delta=10^{-1}\) to balance smoothness and closeness to true MAPE.
+
+\todo[inline]{pseudo-MAPE vs MAPE plot}
+
+% ————————————————————————————————————————————————————————————————————————————
+% End of 'Optimization statement'
+
+% Model's description
+% ————————————————————————————————————————————————————————————————————————————
+\subsection{Model's descriptions}
+
+% Regression trees
+% ------------------------------------------------------
+\subsubsection{Regression trees}\todo{Add link to article, where trees were presented}
+\label{model:regression-tree}
+
+In experiments we use regression trees as base predictors. In general, regression tree is binary tree, which partitions the feature space into regions and predicts constant values within each region, formally:
+\begin{equation}
+    f(x)
+    =
+    \sum\limits_{l=1}^{L}\Indicator{x \in R_l}\cdot\omega_l,
+\end{equation}
+where:
+\begin{itemize}
+    \item \(R_l,\, l \in \overline{1, L}\) form a partition of \(\Reals^d\) into disjoint sets;
+    \item \(\omega_l\) are constant weights on tree leaves.
+\end{itemize}
+
+To perform the partitioning into \( R_l \), each node of the binary tree acts as a simple predicate of the form \( x^{(j)} \le t \), used to select between the left and right child. Here, \( x^{(j)} \) denotes a coordinate in the features \( \Reals^d \) space, and \( t \) is a \emph{threshold}.
+
+\todo[inline]{Add a picture of three}
+
+To select a threshold \( t \) and the corresponding feature index \( j \) at each node, the algorithm maximizes an objective function known as the \emph{information gain (IG, \(\mathcal{IG}\))}. We are going to use the same IG as \cite{chenXGBoostScalableTree2016a}. Let assume \(\hat{y}_i^{(0)}\) as initial prediction (constant)\todo{Think about initial value.}:
+\[
+    \mathcal{IG}(t, j)
+    =
+    \frac{1}{2}
+    \left[
+        \frac{\left(\sum_{i\in \mathcal{I}_L} g_i\right)^2}{\sum_{i\in \mathcal{I}_L} h_i + \lambda}
+        +
+        \frac{\left(\sum_{i\in \mathcal{I}_R} g_i\right)^2}{\sum_{i\in \mathcal{I}_R} h_i + \lambda}
+        -
+        \frac{\left(\sum_{i\in \mathcal{I}} g_i\right)^2}{\sum_{i\in \mathcal{I}} h_i + \lambda}
+        \right]
+    -
+    \gamma,
+\]
+where:
+\begin{itemize}
+    \item \(\mathcal{I}_L = \{\,i: x_{i}^{(j)} \le t\}\) --- indices, which are going to be in the left child if node use threshold \(t\) and feature \(j\);
+    \item \(\mathcal{I}_R = \{\,i: x_{i}^{(j)} > t\}\) --- same, but in the right child;
+    \item \(g_i = \left.\frac{\partial \ell(y_i, \hat{y}_i)}{\partial \hat{y}_i}\right|_{\hat y_i = \hat{y}_i^{(0)}}\) and
+          \(h_i = \left.\frac{\partial^2 \ell(y_i, \hat{y}_i)}{\partial \hat{y}_i^2}\right|_{\hat y_i = \hat{y}_i^{(0)}}\) are the first and second derivatives of the loss;
+    \item \(\lambda\) is the \(L_2\) regularization weight on leaf scores;
+    \item \(\gamma\) is the complexity penalty for adding a new leaf.
+\end{itemize}
+
+In other words, we find a best split in node for \ref{oprimization:task} where complexity penalizes is \(\Omega(f) = \gamma{L} + \frac{1}{2}\lambda\| w \|^2_2\)
+
+Then, once the tree structure is fixed, we assign each leaf \(l\) the weight
+\[
+    \omega_l
+    =
+    -\frac{G_l}{H_l + \lambda},
+    \quad
+    \text{where }
+    G_l = \sum_{i \in R_l} g_i,\, H_l = \sum_{i \in R_l} h_i.
+\]
+% ------------------------------------------------------
+% End of 'Regression trees'
+
+% Random Forest
+% ------------------------------------------------------
+\subsubsection{Random Forest}
+\label{model:random-forest}
+
+Random Forest (RF) is an ensemble of \(B\) regression trees\cite{breimanRandomForests2001}, each trained on a bootstrap draw of the training set. At every split, instead of scanning all \(d\) features, only a random subset of \(m_{\mathrm{try}}\ll d\) candidates is used. Thus, each tree \(f^{(i)}\) is both bagged and feature-subsampled, and the RF prediction is
+
+\begin{equation}
+    f(x)
+    =
+    \frac{1}{B}\sum_{I=1}^B f^{(i)}(x).
+\end{equation}
+
+This dual randomness (bagging + feature subsampling) (1) lowers variance by averaging many decorrelated trees, and (2) secure from overfitting despite fully grown leaves.
+
+Primary hyperparameters:
+\begin{itemize}
+    \item \(B\) --- number of trees;
+    \item \(m_{\mathrm{try}}\) --- (features per split);
+    \item ``Bootstrap sample size'' --- \(n\) draws with replacement.
+\end{itemize}
+
+\cite{breimanRandomForests2001} showed that as \(B \to \infty\), RF variance go to zero if trees correlation is lowest.
+% ------------------------------------------------------
+% End of 'Random Forest'
+
+%%% ************************
+%%% % Quantile Random Forest
+%%% % ------------------------------------------------------
+%%% \subsubsection{Quantile Random Forest}
+%%% Followed the \cite{meinshausenQuantileRegressionForests2006} we build a quantile random forest (QRF) on ensemble of \ref{model:regression-tree}.
+%%% % ------------------------------------------------------
+%%% % End of 'Quantile Random Forest'
+%%% ************************
+
+% Gradient Boosting
+% ------------------------------------------------------
+\subsubsection{Gradient Boosting}
+\label{model:gradient-boosting}
+
+Gradient Boosting \cite{friedmanGreedyFunctionApproximation2001} builds an additive ensemble of \(B\) regression trees by successive error correction. Starting from an initial guess \(f^{(0)}(x)\), each new tree \(h^{(b)}\) is fit to the negative gradient (residuals) of the loss \(\ell\) with respect to the current model. Formally, GBM is
+
+\begin{equation}
+    f_{(B)}(x) = f^{(0)} + \nu\sum\limits_{i=1}^{B}{f^{(i)}(x)},
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item \(\nu\) --- is a learing rate hyperparameter;
+    \item \(B\) --- number of trees;
+    \item \(f^{(b)}\) --- regression tree;
+\end{itemize}
+
+and each of the tree is trained to predict the errors of the previous state model \(f_{(B-1)}\):
+
+\begin{equation}
+    f^{(B)} = \argmin\limits_{f\in\Models}{\sum_{i=1}^{n}{\ell(y_i - f_{(B-1)}(x_i), f(x_i))}}
+\end{equation}
+
+% ------------------------------------------------------
+% End of 'Gradient Boosting'
+
+% SARIMA
+% ------------------------------------------------------
+\subsubsection{SARIMA}
+\label{model:sarima}
+
+Seasonal Autoregressive (AR) Integrated Moving Average (MA) (SARIMA) is the extention of ARIMA model (combination of SARIMA).
+
+Let's denotes
+\begin{itemize}
+    \item \(L\) --- back‑shift (lag) operator, means \(L\,y_{t}=y_{t-1}\);
+    \item \(a(L)=1-a_{1}L-\dots-a_{p}L^{p}\) (AR polynomial);
+    \item \(b(L)=1-b_{1}L-\dots-b_{q}L^{q}\) (MA polynomial);
+    \item \(d\) --- number of non‑seasonal differences needed for stationarity.
+\end{itemize}
+
+% ARIMA
+% . . . . . . . . . . . . . .
+\paragraph{ARIMA \texorpdfstring{\((p,d,q)\)}{(p,d,q)}}
+
+\begin{equation}
+    (1-L)^{d}\,y_{t} = \mu + \frac{b(L)}{a(L)}\,\varepsilon_{t},
+\end{equation}
+% . . . . . . . . . . . . . .
+% ARIMA
+
+% SARIMA
+% . . . . . . . . . . . . . .
+\paragraph{Add seasonality \texorpdfstring{\(\Rightarrow\)}{--- get} SARIMA
+    \texorpdfstring{\((p,d,q)\!\times\!(P,D,Q)_{s}\)}{(p,d,q) x (P,D,Q)\_s}}
+
+\begin{equation}
+    (1-L)^{d}(1-L^{s})^{D}\,y_{t} =
+    \mu +
+    \frac{b(L)\,B(L^{s})}{a(L)\,A(L^{s})}\,\varepsilon_{t},
+\end{equation}
+where
+\begin{itemize}
+    \item \(s\) — seasonal period;
+    \item \((P,D,Q)\) — AR, differencing, and MA orders of the \emph{seasonal} component:
+          \begin{itemize}
+              \item \(A(L) = 1 - A_1\,L^{s} - A_2\,L^{2s} - \cdots - A_P\,L^{Ps}\);
+              \item \(B(L) = 1 - B_1\,L^{s} - B_2\,L^{2s} - \cdots - B_Q\,L^{Qs}\).
+          \end{itemize}
+\end{itemize}
+% . . . . . . . . . . . . . .
+% SARIMA
+
+% ------------------------------------------------------
+% End of 'SARIMA'
+
+% ————————————————————————————————————————————————————————————————————————————
+% End of 'Model's description'
+
+
+% Metrics descriptions
+% ————————————————————————————————————————————————————————————————————————————
+\subsection{Evaluation Metrics}
+
+We evaluate models using RMSE, MAE, MAPE, and Nash–Sutcliffe Efficiency (NSE):
+
+\paragraph{Root Mean Squared Error (RMSE)}
+\begin{equation}
+    \RMSE{y}{\widehat{y}} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} \left(y_i - \widehat{y}_i\right)^2}.
+    \label{metric:rmse}
+    \tag{RMSE}
+\end{equation}
+
+\paragraph{Mean Absolute Error (MAE)}
+\begin{equation}
+    \MAE{y}{\widehat{y}} = \frac{1}{n} \sum_{i=1}^{n} \left|y_i - \widehat{y}_i\right|.
+    \label{metric:mae}
+    \tag{MAE}
+\end{equation}
+
+\paragraph{Mean Absolute Percentage Error (MAPE)}
+\begin{equation}
+    \MAPE{y}{\widehat{y}}
+    = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{y_i - \widehat{y}_i}{y_i} \right| \cdot 100\%.
+    \label{metric:mape}
+    \tag{MAPE}
+\end{equation}
+
+\paragraph{Nash-Sutcliffe Efficiency (NSE)}
+Originally developed in hydrology, the NSE evaluates the predictive power of hydrological models.
+\begin{equation}
+    \NSE{y}{\widehat{y}} = 1 - \frac{\sum_{i=1}^{n} \left( y_i - \widehat{y}_i \right)^2}{\sum_{i=1}^{n} \left( y_i - \overline{y} \right)^2}.
+    \label{metric:nse}
+    \tag{NSE}
+\end{equation}
+
+\subparagraph{Interpretation:}
+\begin{itemize}
+    \item NSE \( = 1 \) indicates a perfect match between model and observations.
+    \item NSE \( = 0 \) implies that the model is no better than using the mean of the observed data.
+    \item NSE \( < 0 \) suggests the model predictions are worse than the mean.
+\end{itemize}
+
+
+% Feature Importance Analysis (SHAP Analysis)
+% ————————————————————————————————————————————————————————————————————————————
+\subsection{Feature Importance Analysis (SHAP Analysis)}
+
+To interpret the predictions and identify the key drivers influencing model performance, we utilize SHapley Additive exPlanations (SHAP)~\cite{lundbergUnifiedApproachInterpreting2017}. SHAP values quantify the contribution of each feature to the model’s predictions based on principles from game theory. Specifically, for a feature $j$ and prediction $f(x)$, SHAP computes the contribution as:
+
+\begin{equation}
+    \phi_j = \sum_{S \subseteq \mathcal{F}\setminus \{j\}} \frac{|S|!(|\mathcal{F}| - |S| - 1)!}{|\mathcal{F}|!}\left[ f_{S \cup \{j\}}(x_{S \cup \{j\}}) - f_S(x_S)\right],
+\end{equation}
+
+where $\mathcal{F}$ is the set of all features, and $S$ is a subset of features excluding feature $j$. The idea is to evaluate the contribution to the model’s predictive performance by removing particular features.
+
+% ————————————————————————————————————————————————————————————————————————————
+% End of 'Feature Importance Analysis (SHAP Analysis)'
+
+
+% Correlation Analysis
+% ————————————————————————————————————————————————————————————————————————————
+\subsection{Correlation Analysis of Static Features}
+
+To identify a subset of static features that are both informative and mutually independent, we perform a Pearson correlation analysis exclusively on the static feature set:
+
+\begin{equation}
+    r_{X,Y} = \frac{\mathrm{cov}(X,Y)}{\sigma_X \,\sigma_Y}
+    = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_{i=1}^{n}(x_i - \bar{x})^2}\;\sqrt{\sum_{i=1}^{n}(y_i - \bar{y})^2}}.
+\end{equation}
+
+We compute all pairwise correlations $r_{i,j}$ among static features and then retain only those features whose absolute mutual correlation satisfies $|r_{i,j}| < 0.7$. By selecting this subset of least‐correlated static variables, we further select only those features that are readily explainable and whose physical interpretation --- such as basin area, mean slope, or soil type --- is clear. This two‐step selection ensures that the final static features both distinguish among river catchments and remain interpretable for insight into hydrological processes.
+
+% ————————————————————————————————————————————————————————————————————————————
+% End of 'Correlation Analysis of Static Features'

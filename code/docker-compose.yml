@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
+    image: khuzin/m1p-dask:latest
     command: dask scheduler
     volumes:
       - ../data:/home/khuzin/Projects/2025-Project-188/data:rw
@@ -18,6 +19,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
+    image: khuzin/m1p-dask:latest
     command: dask worker tcp://scheduler:8786
     depends_on:
       - scheduler

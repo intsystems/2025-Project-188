@@ -28,6 +28,9 @@ dependencies = [
     # "dask_cuda (==25.02.00)",
     "iprogress (>=0.4,<0.5)",
     "ipywidgets (>=8.1.7,<9.0.0)",
+    "folium (>=0.19.6,<0.20.0)",
+    "contextily (>=1.6.2,<2.0.0)",
+    "elevation (>=1.1.3,<2.0.0)",
 ]
 
 [tool.poetry2conda]

@@ -14,6 +14,7 @@ experiments/catboost_info
 .dvc
 !.dvc/config
 pgdata
+**/doc-build
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

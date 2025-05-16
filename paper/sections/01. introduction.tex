@@ -1,0 +1,24 @@
+%% ============================================================================================================
+%% Introduction
+%% ============================================================================================================
+\section{Introduction}
+\label{sec:introduction}
+
+Accurate rainfall--runoff forecasting is essential for water--resource management (long--term water--resource planning, reservoir operation) and flood risk assessment. Nevertheless, forecast skill in the calibration period does not automatically translate into reliable predictions for unseen basins or extreme events; rigorous tests of model generalisation are therefore indispensable.
+
+Traditionally, physically based hydrological models are calibrated separately for each basin; yet it is often observed  that markedly different parameter sets or model structures can reproduce the same hydrograph with near--identical accuracy --- a phenomenon known as \emph{equifinality} (literally ``equal finality'') \cite{bevenFutureDistributedModels1992a, freerBayesianEstimationUncertainty1996}. Equifinality undermines the notion of a unique ``best'' model and complicates any attempt to ascribe physical meaning to fitted parameters.
+
+Machine--learning (ML) methods intensify this challenge. The flexibility of modern data--driven methods --- from tree ensembles to deep neural networks --- gives them many ``degrees of freedom'' to fit data and can exploit subtle correlations that lack causal significance. High predictive skill alone therefore \emph{does not guarantee} that an ML model has learned the underlying hydrological processes. When several equifinal models agree on historical data, some may break down under non-stationary climate or in ungauged basins.
+
+Static catchment descriptors --- such as drainage area, mean slope, soil texture, and aridity index--offer a partial remedy by injecting physical context into data--driven models; incorporating them into an LSTM has been shown to yield a "universal" regional model that generalises across basins \cite{kratzertLearningUniversalRegional2019}. Yet under equifinality different architectures may leverage the same descriptors in different ways or ignore them altogether while still achieving comparable accuracy. Determining which inputs truly drive predictions is thus a prerequisite for trustworthy operational use.
+
+This study disentangles equifinality in data--driven rainfall--runoff modeling through a controlled, large-sample comparison of three representative ML architectures: a random forest, a gradient boosting and a long short--term memory (LSTM) network. All models receive identical meteorological time series and static basin attributes, eliminating data inequality as a confounder. We evaluate their predictive skill --- quantified by Nash--Sutcliffe efficiency (NSE), root mean square error (RMSE), and mean absolute percentage error (MAPE) --- on 1,073 Eurasian basins and inspect feature contributions via SHAP values.
+
+Our contributions are three--fold:
+\begin{enumerate}
+    \item We quantify how often alternative architectures yield statistically indistinguishable performance, providing a basin--wise map of equifinality.
+    \item We reveal the degree to which equifinal models rely on the same (or different) static and dynamic predictors.
+    \item We discuss the trade--off between accuracy, interpretability, and computational cost, offering guidance for practitioners choosing between simple and complex ML tools.
+\end{enumerate}
+
+The remainder of the paper is organised as follows. Section~\ref{sec:data} describes the data set and study area. Section~\ref{sec:methods} details the models, training procedure, loss functions, and evaluation metrics. Section~\ref{sec:computational-experiment} presents the experimental results, including an analysis of equifinality and feature importance. Section~\ref{sec:discussion} discusses the implications for hydrological theory and operational forecasting. Finally, Section~\ref{sec:conclusion} summarises the key findings and outlines future work.

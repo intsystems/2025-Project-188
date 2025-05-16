@@ -1,0 +1,60 @@
+%% ============================================================================================================
+%% Problem Statement
+%% ============================================================================================================
+\section{Problem Statement}
+\label{sec:problem-statement}
+
+\paragraph{Notation}
+\begin{itemize}
+    \item Let \(y \in \Reals^n\) and \( y_i \in \Reals \) denote target; \(x \in \Reals^{n \times d}\) and \( x_i \in \Reals^d \) denote \(d\) features associated with \( y_i \), where \(n\) is the number of samples;
+    \item Let the dataset be \( \Dataset = \set{(x_i, y_i) \mid i \in \overline{1, n}} \) --- set of \(n\) pairs for features and targets.
+    \item Let the models class be denoted as \(\Models\);
+    \item Let \( \hat{y}_i \coloneqq f(x_i),\, f \in \Models\) denotes estimation of \( y_i \) based on \( x_i \);
+    \item Let assume \(\hat{y} \coloneqq \left( \hat{y}_1, \dots, \hat{y}_n \right) = \left( f(x_1), \dots, f(x_n) \right)\).
+\end{itemize}
+
+
+% Optimization statement
+% ————————————————————————————————————————————————————————————————————————————
+\subsection{Optimization statement}
+
+In general, in each experiment we find the optimal model \(\BestModel\) s.t.
+
+\begin{equation}
+    \BestModel
+    =
+    \argmin\limits_{f \in \Models}{\left( \Ell(f, \Dataset) + \Omega(f) \right)},
+    \label{oprimization:general-task}
+\end{equation}
+
+where:
+
+\begin{itemize}
+    \item \( \Ell(f, \Dataset) \) denotes the empirical loss of model \(f\) on dataset \(\Dataset\);
+    \item \( \Omega(f) \) is a regularization term penalizing model complexity.
+\end{itemize}
+
+Let \(\ell(\cdot, \cdot)\) denotes the actual loss function, so \(\Ell(f, \Dataset) = \ell(y, \hat{y}) = \frac{1}{n}{\sum\limits_{i=1}^{n}{\ell(y_i, \hat{y}_i)}} \).
+
+In our work we choose\todo{Link to article and explanation why MAPE} \(\ell\) as a mean absolute percentage error (\ref{metric:mape}), so \ref{oprimization:general-task} can be rewriten as
+
+\begin{equation}
+    \BestModel
+    =
+    \argmin\limits_{
+        f \in \Models
+    }{
+        \left(
+        \sum_{i=1}^{n} \left| \frac{y_i - f({x_i})}{y_i} \right|
+        +
+        \Omega(f)
+        \right)
+    }.
+    \label{oprimization:task}
+    \tag{Opt.~task}
+\end{equation}
+
+% ————————————————————————————————————————————————————————————————————————————
+% End of 'Optimization statement'
+
+
