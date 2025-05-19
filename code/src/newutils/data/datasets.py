@@ -1,9 +1,10 @@
-from oldutils.datasets import ARTIFACTS_FOLDER
-import polars as pl
+import warnings
+
 import dask
 import dask.dataframe as dd
 import pandas as pd
-import warnings
+import polars as pl
+from oldutils.datasets import ARTIFACTS_FOLDER
 
 PATH_MERGED_DATASETS = ARTIFACTS_FOLDER / "merged_datasets"
 FILENAME_TRAIN_IDS = "train_file_ids.csv"
@@ -66,6 +67,11 @@ def get_train_gauge_ids():
 
 def load_train_gauge(gauge_id):
     paths = [PATH_MERGED_DATASETS / f"{gauge_id}.parquet"]
+    return dd.read_parquet(paths)
+
+
+def load_train_gauges(gauge_ids):
+    paths = [PATH_MERGED_DATASETS / f"{gauge_id}.parquet" for gauge_id in gauge_ids]
     return dd.read_parquet(paths)
 
 

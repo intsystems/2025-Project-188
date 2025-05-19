@@ -7,6 +7,7 @@ from config import STATIC_FEATURES
 from dask.distributed import Client, LocalCluster, wait
 from newutils.data.datasets import (
     add_lags,
+    load_train_gauges,
     load_train_subset,
     load_train_subset_fixed_per_file,
 )
@@ -29,11 +30,14 @@ class Dataset:
     OTHER_X_DROPS = ["date", "gauge_id"]
     TARGET = "q_mm_day"
 
-    def __init__(self, client: Client):
+    def __init__(self, client: Client, gauge_ids=None, static_features=None):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
         self.client = client
+        self.gauge_ids = gauge_ids
+        self.static_features = static_features
+
         self.targets = list()
 
         self.ts = None
@@ -50,7 +54,13 @@ class Dataset:
             self.hsff = (
                 HydroStaticFeaturesFiles()
                 .dataframe.collect()
-                .to_pandas()[STATIC_FEATURES + ["gauge_id"]]
+                .to_pandas()[
+                    (
+                        (STATIC_FEATURES + ["gauge_id"])
+                        if self.static_features is None
+                        else self.static_features
+                    )
+                ]
                 .astype({"gauge_id": np.int32})
             )
             self.hsff = dd.from_pandas(self.hsff)
@@ -77,9 +87,15 @@ class Dataset:
 
     def load_timeseries(self, num_load):
         self.logger.info("Load time series.")
-        self.df = load_train_subset(num_load)
+        if self.gauge_ids is None:
+            self.df = load_train_subset(num_load)
+        else:
+            self.logger.warning(
+                f"num_load is ignored, loads set of gauge_ids: {self.gauge_ids}"
+            )
+            self.df = load_train_gauges(self.gauge_ids)
         # TODO: debug here is the sampling
-        self.logger.warning("DEBUG: frac=0.1")
+        # self.logger.warning("DEBUG: frac=0.1")
         # self.ts = self.ts.sample(frac=0.1)
         return self
 

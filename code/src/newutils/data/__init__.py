@@ -15,4 +15,5 @@ __all__ = [
     "COL_GAUGE_ID",
     "get_train_gauge_ids",
     "load_train_gauge",
+    "load_train_gauges",
 ]

@@ -8,7 +8,7 @@
 % ————————————————————————————————————————————————————————————————————————————
 \subsection{Study Area}
 
-This study focuses on river basins across Eurasia, located approximately between latitudes \todo{latitudes} and longitudes \todo{longitudes}. The selected region encompasses a wide range of static basin characteristics and climatic conditions, making it suitable for analyzing hydrological equifinality.
+This study focuses on river basins across Eurasia, located approximately between latitudes 41.42--71.97 and longitudes 19.92--170.50. The selected region encompasses a wide range of static basin characteristics and climatic conditions, making it suitable for analyzing hydrological equifinality.
 
 \todo[inline]{Add a map of the river basins}
 
@@ -17,7 +17,7 @@ This study focuses on river basins across Eurasia, located approximately between
 \subsection{Hydrometeorological Data}
 
 The dataset includes daily time series from 2008 to 2022 for the following features:
-precipitation (\texttt{prcp}), river water level (\texttt{lvl\_sm}), minimum temperature (\texttt{t\_min}), maximum temperature (\texttt{t\_max}), mean temperature (\texttt{t\_mean} \todo{check the name of t\_mean}), and river discharge (\texttt{q\_mm\_day}).
+precipitation (\texttt{prcp}), river water level (\texttt{lvl\_sm}), minimum temperature (\texttt{t\_min}), maximum temperature (\texttt{t\_max}), mean temperature (\texttt{t\_mean}), and river discharge (\texttt{q\_mm\_day}).
 
 \todo[inline]{Add an example time series plot.}
 
@@ -25,9 +25,9 @@ precipitation (\texttt{prcp}), river water level (\texttt{lvl\_sm}), minimum tem
 % ————————————————————————————————————————————————————————————————————————————
 \subsection{Static Basin Attributes}
 
-Static (time-invariant) characteristics of the river basins were derived from the HydroSHEDS database \todo{Add cite to https://www.hydrosheds.org/}. A total of 12 features\ref{table:static-attributes} were selected based on two main criteria: (i) low pairwise correlation and (ii) high interpretability for ability to explain the models.
+Static (time-invariant) characteristics of the river basins were derived from the HydroSHEDS database\cite{linkeGlobalHydroenvironmentalSubbasin2019}. A total of 15 features\ref{table:static-attributes} were selected based on two main criteria: (i) low pairwise correlation and (ii) high interpretability for ability to explain the models.
 
-In total, data were available for 2,201 river basins. For model training and subsequent analysis, we selected a subset of 1,073 basins with the fewest missing values to ensure data quality and consistency across samples.
+In total, data were available for 2,201 river basins. For model training and subsequent analysis, we selected a subset of 1,073 basins --- basins without missing values to ensure data quality and consistency across samples.
 
 \begin{table}[ht]
     \centering

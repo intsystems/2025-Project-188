@@ -204,55 +204,55 @@ and each of the tree is trained to predict the errors of the previous state mode
 % ------------------------------------------------------
 % End of 'Gradient Boosting'
 
-% SARIMA
-% ------------------------------------------------------
-\subsubsection{SARIMA}
-\label{model:sarima}
+% % SARIMA
+% % ------------------------------------------------------
+% \subsubsection{SARIMA}
+% \label{model:sarima}
 
-Seasonal Autoregressive (AR) Integrated Moving Average (MA) (SARIMA) is the extention of ARIMA model (combination of SARIMA).
+% Seasonal Autoregressive (AR) Integrated Moving Average (MA) (SARIMA) is the extention of ARIMA model (combination of SARIMA).
 
-Let's denotes
-\begin{itemize}
-    \item \(L\) --- back‑shift (lag) operator, means \(L\,y_{t}=y_{t-1}\);
-    \item \(a(L)=1-a_{1}L-\dots-a_{p}L^{p}\) (AR polynomial);
-    \item \(b(L)=1-b_{1}L-\dots-b_{q}L^{q}\) (MA polynomial);
-    \item \(d\) --- number of non‑seasonal differences needed for stationarity.
-\end{itemize}
+% Let's denotes
+% \begin{itemize}
+%     \item \(L\) --- back‑shift (lag) operator, means \(L\,y_{t}=y_{t-1}\);
+%     \item \(a(L)=1-a_{1}L-\dots-a_{p}L^{p}\) (AR polynomial);
+%     \item \(b(L)=1-b_{1}L-\dots-b_{q}L^{q}\) (MA polynomial);
+%     \item \(d\) --- number of non‑seasonal differences needed for stationarity.
+% \end{itemize}
 
-% ARIMA
-% . . . . . . . . . . . . . .
-\paragraph{ARIMA \texorpdfstring{\((p,d,q)\)}{(p,d,q)}}
+% % ARIMA
+% % . . . . . . . . . . . . . .
+% \paragraph{ARIMA \texorpdfstring{\((p,d,q)\)}{(p,d,q)}}
 
-\begin{equation}
-    (1-L)^{d}\,y_{t} = \mu + \frac{b(L)}{a(L)}\,\varepsilon_{t},
-\end{equation}
-% . . . . . . . . . . . . . .
-% ARIMA
+% \begin{equation}
+%     (1-L)^{d}\,y_{t} = \mu + \frac{b(L)}{a(L)}\,\varepsilon_{t},
+% \end{equation}
+% % . . . . . . . . . . . . . .
+% % ARIMA
 
-% SARIMA
-% . . . . . . . . . . . . . .
-\paragraph{Add seasonality \texorpdfstring{\(\Rightarrow\)}{--- get} SARIMA
-    \texorpdfstring{\((p,d,q)\!\times\!(P,D,Q)_{s}\)}{(p,d,q) x (P,D,Q)\_s}}
+% % SARIMA
+% % . . . . . . . . . . . . . .
+% \paragraph{Add seasonality \texorpdfstring{\(\Rightarrow\)}{--- get} SARIMA
+%     \texorpdfstring{\((p,d,q)\!\times\!(P,D,Q)_{s}\)}{(p,d,q) x (P,D,Q)\_s}}
 
-\begin{equation}
-    (1-L)^{d}(1-L^{s})^{D}\,y_{t} =
-    \mu +
-    \frac{b(L)\,B(L^{s})}{a(L)\,A(L^{s})}\,\varepsilon_{t},
-\end{equation}
-where
-\begin{itemize}
-    \item \(s\) — seasonal period;
-    \item \((P,D,Q)\) — AR, differencing, and MA orders of the \emph{seasonal} component:
-          \begin{itemize}
-              \item \(A(L) = 1 - A_1\,L^{s} - A_2\,L^{2s} - \cdots - A_P\,L^{Ps}\);
-              \item \(B(L) = 1 - B_1\,L^{s} - B_2\,L^{2s} - \cdots - B_Q\,L^{Qs}\).
-          \end{itemize}
-\end{itemize}
-% . . . . . . . . . . . . . .
-% SARIMA
+% \begin{equation}
+%     (1-L)^{d}(1-L^{s})^{D}\,y_{t} =
+%     \mu +
+%     \frac{b(L)\,B(L^{s})}{a(L)\,A(L^{s})}\,\varepsilon_{t},
+% \end{equation}
+% where
+% \begin{itemize}
+%     \item \(s\) — seasonal period;
+%     \item \((P,D,Q)\) — AR, differencing, and MA orders of the \emph{seasonal} component:
+%           \begin{itemize}
+%               \item \(A(L) = 1 - A_1\,L^{s} - A_2\,L^{2s} - \cdots - A_P\,L^{Ps}\);
+%               \item \(B(L) = 1 - B_1\,L^{s} - B_2\,L^{2s} - \cdots - B_Q\,L^{Qs}\).
+%           \end{itemize}
+% \end{itemize}
+% % . . . . . . . . . . . . . .
+% % SARIMA
 
-% ------------------------------------------------------
-% End of 'SARIMA'
+% % ------------------------------------------------------
+% % End of 'SARIMA'
 
 % ————————————————————————————————————————————————————————————————————————————
 % End of 'Model's description'
