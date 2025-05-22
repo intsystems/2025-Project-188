@@ -52,13 +52,14 @@
   \end{columns}}
 
 %----------------------------------------------------------------------------------------------------------
-\title{Эквифинальность в задачах гидрологического прогнозирования}
-\author[Э. Хузин]{Эльдар Хузин}
+\title{Untangling Equifinality: A Large-Sample Benchmark of Machine-Learning Models for Rainfall–Runoff Forecasting in Eurasian Basins}
+\author[Э.~Хузин]{Эльдар Хузин}
 \institute{Московский физико-технический институт}
 \date{\footnotesize
-  \emph{Консультант:} Д.~Абрамов\\
-  2025
-}
+\par\smallskip\emph{Курс:} My first scientific paper
+\par\smallskip\emph{Эксперт:} Д.~Абрамов
+\par\smallskip\emph{Консультант:} D.\,D.~Dorin
+\par\bigskip\small 2025}
 
 \begin{document}
 
@@ -73,10 +74,10 @@
 
     \begin{block}{Задачи}
         \begin{enumerate}
+            \item Кластеризовать бассейны по статическим атрибутам
+            \item Оценить вклад статических атрибутов через SHAP анализ в работу модели.
             \item Сравнить модели по метрикам NSE, RMSE, MAE, MAPE.
-            \item Построить ``карту эквифинальности'' --- области, где ошибки моделей
                   статистически неразличимы.
-            \item Оценить вклад признаков через SHAP-значения.
             \item Проанализировать компромисс ``точность\textbackslash вычислительная
                   сложность\textbackslash интерпретируемость''.
         \end{enumerate}
@@ -91,10 +92,9 @@
 \begin{frame}{Публикации по теме}
     \nocite{
         bevenFutureDistributedModels1992a,
-        schmidtChallengesApplyingMachine2020
+        kratzertLearningUniversalRegional2019
         underwoodMachineLearningRevealsEquifinality2023,
         janssenTacklingWaterTable2024,
-        SpatialtemporalBehaviorPrecipitation2022,
     }
     \printbibliography[heading=None]
 \end{frame}

@@ -66,7 +66,7 @@ class Experiment:
             evals=[(self.dtrain, "train"), (self.dtest, "eval")],
             num_boost_round=params["num_boost_round"],
             verbose_eval=params["verbose_eval"],
-            obj=pseudo_mape_obj,
+            # obj=pseudo_mape_obj,
             feval=pseudo_mape_eval,
         )
 
@@ -74,7 +74,7 @@ class Experiment:
         self.logger.info("Save the result.")
         timestamp = datetime.now().strftime(r"%Y-%m-%d_%H%M%S")
         self.model_paths.append(self.artifacts_path / f"model{timestamp}.json")
-        self.train_results["booster"].save_model(self.model_paths[-1])
+        self.train_results.save_model(self.model_paths[-1])
 
     def make(self, params: Dict[str, Any]) -> None:
         self.prepare_experiment(params["num_load"])
