@@ -19,31 +19,25 @@ All experiments were conducted in Python 3.12 using the following open-source li
 Experiments were executed on a machine \todo{describe the machine}. The complete source code and environment configuration files are available at: \url{https://github.com/intsystems/2025-Project-188}.
 % \end{refcontext}
 
-\todo[inline]{Корреляционный анализ}
+\subsection{Correlation analysis}
 
-\todo[inline]{Кластеризацию --- k-mean применили}
+To eliminate model equifinality arising from mathematical similarity among features (which is especially critical for tree-based algorithms), we conducted a correlation analysis\ref{fig:corr-analysis} using Pearson’s correlation coefficient. From the full feature set, 20 static features and 3 ``reserve'' features (duplicating the main ones when some data were missing) were selected. For the final feature selection, we first computed the sum of absolute correlations of each feature with all others, chose those with the lowest totals, and then picked the most readily interpretable features from that subset.
 
-% Experiment 1. QRF
-% ————————————————————————————————————————————————————————————————————————————
-\subsection{Experiment 1. Random Forest}
-\label{experiment:random-forest}
+\begin{center}
+    \includegraphics[width=0.6\textwidth]{bin/static_features_heatmap.pdf}
+    \label{fig:corr-analysis}
+\end{center}
 
-1. Модель обучена на всех дататов
-2. На тех же атрибутах, что и кластеризация.
-3. Определены следующие значемые признаки: ...
+\subsection{Clusterization}
 
-% Experiment 2. GBRT
-% ————————————————————————————————————————————————————————————————————————————
-\subsection{Experiment 2. Gradient boosting}
-\label{experiment:GBRT}
-
-% Experiment 3. LSTM
-% ————————————————————————————————————————————————————————————————————————————
-\subsection{Experiment 3. SARIMA}
-\label{experiment:SARIMA}
+To assess how well the models actually capture hydrological patterns, we grouped river basins into clusters based on static features. After training on the full dataset, we expected the model to assign each basin to its cluster and recognize these groups as significant. We conducted a visual analysis of clustering using the k-means algorithm with prior standard scaling of the features. The number of clusters was varied from 5 to 14, and based on the heatmap that most clearly reflected differences among basins by their static attributes, we decided to use nine clusters.
 
 
-% Experiment 4. LSTM
-% ————————————————————————————————————————————————————————————————————————————
-\subsection{Experiment 4. LSTM}
-\label{experiment:LSTM}
+\subsection{Data-Processing Pipeline}
+\begin{enumerate}
+    \item Split the dataset into training (train) and validation (valid) sets;
+    \item Perform hyperparameter tuning with Optuna to select the optimal model within each algorithm class;
+    \item Train the model on the training set;
+    \item Conduct feature-importance analysis using SHAP for each model class;
+    \item Compare models based on key metrics on both the training and validation sets.
+\end{enumerate}

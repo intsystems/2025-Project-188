@@ -4,3 +4,15 @@
 \section{Discussion}
 \label{sec:discussion}
 
+Our benchmark reveals \emph{equifinality}: Random Forest, Gradient Boosting achieve statistically indistinguishable Nash--Sutcliffe efficiencies on many basins, indicating multiple plausible solutions.
+
+Feature--importance analyses show that RF consistently emphasizes soil moisture and slope, whereas GB adapts to local characteristics (e.g., temperature regimes, watershed area). This underlines the need for interpretability checks to uncover divergent decision logics.
+
+In practical terms, RF delivers the highest accuracy but incurs greater memory and prediction--latency costs; GB offers a more compact model with marginally lower performance; Future work should integrate extreme--event indicators, human--infrastructure variables, transfer--learning frameworks for ungauged basins, and model--agnostic interpretability methods to validate causal consistency under nonstationary conditions.
+
+
+
+
+
+
+

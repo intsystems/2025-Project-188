@@ -4,7 +4,7 @@
 \section{Methods}
 \label{sec:methods}
 
-\todo[inline]{Общий pipeline}
+% \todo[inline]{Общий pipeline}
 
 % Problem statement and notation
 % ————————————————————————————————————————————————————————————————————————————
@@ -40,7 +40,8 @@ where \( \Ell(f, \Dataset) \) denotes the empirical loss of model \(f\) on datas
 
 Let \(\ell(\cdot, \cdot)\) denotes the actual loss function, so \(\Ell(f, \Dataset) = \ell(y, \hat{y}) = \frac{1}{n}{\sum\limits_{i=1}^{n}{\ell(y_i, \hat{y}_i)}} \).
 
-In our work we choose\todo{Link to article and explanation why MAPE} \(\ell\) as a mean absolute percentage error (\ref{metric:mape}), so \ref{oprimization:general-task} can be rewriten as
+% \todo{Link to article and explanation why MAPE}
+In our work we choose \(\ell\) as a mean absolute percentage error (\ref{metric:mape}), so \ref{oprimization:general-task} can be rewriten as
 
 \begin{equation}
     \BestModel
@@ -72,7 +73,8 @@ Its gradient and Hessian (needed for XGBoost’s custom objective) are
 \]
 In our experiments we set \(\delta=10^{-1}\) to balance smoothness and closeness to true MAPE.
 
-\todo[inline]{pseudo-MAPE vs MAPE plot}
+\includegraphics[width=\textwidth]{bin/mape_vs_pseudo_mape.pdf}
+
 
 % ————————————————————————————————————————————————————————————————————————————
 % End of 'Optimization statement'
@@ -83,7 +85,7 @@ In our experiments we set \(\delta=10^{-1}\) to balance smoothness and closeness
 
 % Regression trees
 % ------------------------------------------------------
-\subsubsection{Regression trees}\todo{Add link to article, where trees were presented}
+\subsubsection{Regression trees} % \todo{Add link to article, where trees were presented}
 \label{model:regression-tree}
 
 In experiments we use regression trees as base predictors. In general, regression tree is binary tree, which partitions the feature space into regions and predicts constant values within each region, formally:
@@ -100,9 +102,9 @@ where:
 
 To perform the partitioning into \( R_l \), each node of the binary tree acts as a simple predicate of the form \( x^{(j)} \le t \), used to select between the left and right child. Here, \( x^{(j)} \) denotes a coordinate in the features \( \Reals^d \) space, and \( t \) is a \emph{threshold}.
 
-\todo[inline]{Add a picture of three}
+% \todo[inline]{Add a picture of three}
 
-To select a threshold \( t \) and the corresponding feature index \( j \) at each node, the algorithm maximizes an objective function known as the \emph{information gain (IG, \(\mathcal{IG}\))}. We are going to use the same IG as \cite{chenXGBoostScalableTree2016a}. Let assume \(\hat{y}_i^{(0)}\) as initial prediction (constant)\todo{Think about initial value.}:
+To select a threshold \( t \) and the corresponding feature index \( j \) at each node, the algorithm maximizes an objective function known as the \emph{information gain (IG, \(\mathcal{IG}\))}. We are going to use the same IG as \cite{chenXGBoostScalableTree2016a}. Let assume \(\hat{y}_i^{(0)}\) as initial prediction (constant):
 \[
     \mathcal{IG}(t, j)
     =
