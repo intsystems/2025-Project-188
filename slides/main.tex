@@ -33,6 +33,9 @@
 \usepackage{multicol}
 \usepackage{hyperref}
 \usepackage{hhline}
+\usepackage{booktabs}  % красивые линии
+\usepackage{makecell}  % многострочные ячейки
+
 \graphicspath{{fig/}{../fig/}}
 
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -52,13 +55,14 @@
   \end{columns}}
 
 %----------------------------------------------------------------------------------------------------------
-\title{Эквифинальность в задачах гидрологического прогнозирования}
-\author[Э. Хузин]{Эльдар Хузин}
+\title{Untangling Equifinality: A Large-Sample Benchmark of Machine-Learning Models for Rainfall–Runoff Forecasting in Eurasian Basins}
+\author[Э.~Хузин]{Эльдар Хузин}
 \institute{Московский физико-технический институт}
 \date{\footnotesize
-  \emph{Консультант:} Д.~Абрамов\\
-  2025
-}
+\par\smallskip\emph{Курс:} My first scientific paper
+\par\smallskip\emph{Эксперт:} Д.~Абрамов
+\par\smallskip\emph{Консультант:} Д.~Абрамов
+\par\bigskip\small 2025}
 
 \begin{document}
 
@@ -68,22 +72,21 @@
 %-----------------------------------------------------------------------------------------------------
 \begin{frame}{Цель исследования}
     \begin{block}{Цель}
-        Исследовать эквифинальность моделей RF, XGBoost, LSTM, а также их способность выявлять гидрологические закономерности в данных о стоке рек.
+        Исследовать эквифинальность моделей RF, XGBoost, LSTM, а также их способность выявлять гидрологические закономерности.
     \end{block}
 
-    \begin{block}{Задачи}
+    \begin{block}{Задача}
+        Сравнить одинаковые по точности модели в их способности выделять ключевые для бассейнов статические характеристики.
+    \end{block}
+
+    \begin{block}{Решение}
         \begin{enumerate}
+            \item На обширном датасете кластеризовать бассейны рек по статически признакам.
             \item Сравнить модели по метрикам NSE, RMSE, MAE, MAPE.
-            \item Построить ``карту эквифинальности'' --- области, где ошибки моделей
-                  статистически неразличимы.
             \item Оценить вклад признаков через SHAP-значения.
             \item Проанализировать компромисс ``точность\textbackslash вычислительная
                   сложность\textbackslash интерпретируемость''.
         \end{enumerate}
-    \end{block}
-
-    \begin{block}{Решение}
-        Провести на обширном датасете временных рядов и статических признаков SHAP--анализ моделей.
     \end{block}
 \end{frame}
 
@@ -91,10 +94,10 @@
 \begin{frame}{Публикации по теме}
     \nocite{
         bevenFutureDistributedModels1992a,
-        schmidtChallengesApplyingMachine2020
-        underwoodMachineLearningRevealsEquifinality2023,
-        janssenTacklingWaterTable2024,
+        kratzertLearningUniversalRegional2019,
         SpatialtemporalBehaviorPrecipitation2022,
+        % underwoodMachineLearningRevealsEquifinality2023,
+        % janssenTacklingWaterTable2024,
     }
     \printbibliography[heading=None]
 \end{frame}
@@ -111,8 +114,8 @@
         \item Обучение
               \begin{enumerate}
                   \item Выделение выборок (12/3)
-                  \item Подбор гиперпараметров
-                  \item Обучение
+                  \item Подбор гиперпараметров (Optuna)
+                  \item Training
               \end{enumerate}
         \item SHAP-анализ и другие метрики    \[
                   \phi_i=\!\!\!\sum_{S\subseteq N\setminus\{i\}}
@@ -125,16 +128,33 @@
 
 %----------------------------------------------------------------------------------------------------------
 \begin{frame}{Данные}
-    \includegraphics[width=1\textwidth]{bin/train_gauges_cartopy_10m_large.pdf}
+    % --- карта --------------------------------------------------
+    \includegraphics[width=\linewidth]{bin/train_gauges_cartopy_10m_clusters.pdf}
+
+    \vspace{0.6em} % небольшой отступ
+
+    % --- таблица (две строки) -----------------------------------
+    \scriptsize
+    \setlength{\extrarowheight}{2pt}
+    \begin{tabular}{ccc}
+        \toprule
+        \textbf{Cluster} & \textbf{Rank 1}               & \textbf{Rank 2}              \\
+        \midrule
+        0                & lat (Широта)                  & for\_pc\_sse (Площадь лесов) \\
+        1                & crp\_pc\_sse (Пахотные земли) & pst\_pc\_sse (Пастбища)      \\
+        2                & gwt\_cm\_sav (Глубина ГВ)     & for\_pc\_sse (Площадь лесов) \\[2pt]
+        \bottomrule
+    \end{tabular}
 \end{frame}
+%------------------------------------------------------
 
 %----------------------------------------------------------------------------------------------------------
 \begin{frame}{Данные}
-    Ежедневные данные за период с 2008 по 2022 год на 1072 бассейнов.
+    Ежедневные данные за период с 2008 по 2022 год с 1072 бассейнов.
 
     \medskip
     \textbf{prcp} – количество осадков (мм/сут)\\
-    \textbf{lvl\_sm} – уровень воды в реке (м)\\
+    \textbf{lvl\_sm} – уровень воды в реке (м) [deprecated]\\
     \textbf{t\_min} – минимальная температура (°C)\\
     \textbf{t\_max} – максимальная температура (°C)\\
     \textbf{t\_mean} – средняя температура (от почасовой) (°C)\\
@@ -151,23 +171,30 @@
         \centering
         \begin{tabular}{lll}
             \toprule
-            \textbf{ID}  & \textbf{Атрибут}                     &                       \\
+            \textbf{ID} & \textbf{Атрибут}                     &              \\
             \midrule
-            \textbf{L07} & Лесные территории (\%)               & \texttt{for\_pc\_sse} \\
-            \textbf{L08} & Сельскохозяйственные угодья (\%)     & \texttt{crp\_pc\_sse} \\
-            \textbf{L09} & Пастбища (\%)                        & \texttt{pst\_pc\_sse} \\
-            \textbf{L10} & Орошаемые земли (\%)                 & \texttt{ire\_pc\_sse} \\
-            \textbf{A03} & Урбанизированные территории (\%)     & \texttt{urb\_pc\_sse} \\
-            \textbf{S07} & Карстовые ландшафты (\%)             & \texttt{kar\_pc\_sse} \\
-            \textbf{P01} & Средняя высота над уровнем моря (м)  & \texttt{ele\_mt\_sav} \\
-            \textbf{P02} & Средний уклон местности (°)          & \texttt{slp\_dg\_sav} \\
-            \textbf{C06} & Аридность                            & \texttt{ari\_ix\_sav} \\
-            \textbf{H10} & Глубина залегания грунтовых вод (см) & \texttt{gwt\_cm\_sav} \\
-            \textbf{S05} & Среднегодовая влажность почвы (\%)   & \texttt{swc\_pc\_syr} \\
-            \textbf{S01} & Глина в почве (\%)                   & \texttt{cly\_pc\_sav} \\
-            \textbf{A06} & Индекс антропогенного воздействия    & \texttt{hft\_ix\_s09} \\
-            \textbf{P04} & Географическая широта (°)            & \texttt{lat}          \\
-            \textbf{P05} & Географическая долгота (°)           & \texttt{lon}          \\
+            S03         & Песок в почве (\%)                   & snd\_pc\_sav \\
+            S01         & Глина в почве (\%)                   & cly\_pc\_sav \\
+            S02         & Ил в почве (\%)                      & slt\_pc\_sav \\
+            H05         & Объём озёр (млн м$^{3}$)             & lkv\_mc\_usu \\
+            H06         & Объём водохранилищ (млн м$^{3}$)     & rev\_mc\_usu \\
+            H04         & Доля озёрной поверхности (\%)        & lka\_pc\_use \\
+            H03         & Площадь затопления (\%)              & inu\_pc\_ult \\
+            H10         & Глубина грунтовых вод (см)           & gwt\_cm\_sav \\
+            H08         & Площадь рек (га)                     & ws\_area     \\
+            P04         & Географическая широта ($^{\circ}$)   & lat          \\
+            P05         & Географическая долгота ($^{\circ}$)  & lon          \\
+            P01         & Средняя высота над уровнем моря (м)  & ele\_mt\_sav \\
+            P02         & Средний уклон местности ($^{\circ}$) & slp\_dg\_sav \\
+            % P03         & Средний уклон руслового профиля ($^{\circ}$) & sgr\_dk\_sav \\
+            % –           & Средняя высота водосборного бассейна (м)     & height\_bs   \\
+            % L07         & Лесные территории (\%)                       & for\_pc\_sse \\
+            % L08         & Сельскохозяйственные угодья (\%)             & crp\_pc\_sse \\
+            % L09         & Пастбища (\%)                                & pst\_pc\_sse \\
+            % L10         & Орошаемые земли (\%)                         & ire\_pc\_sse \\
+            % L12         & Территории вечной мерзлоты (\%)              & prm\_pc\_sse \\
+            % A03         & Урбанизированные территории (\%)             & urb\_pc\_sse \\
+            % S07         & Карстовые ландшафты (\%)                     & kar\_pc\_sse \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -194,7 +221,7 @@
 \end{frame}
 
 %----------------------------------------------------------------------------------------------------------
-\begin{frame}{Regression Trees}
+\begin{frame}{Random Forest и Gradient Boosting}
     Модель:
     \[
         f(x) = \sum_{l=1}^L \omega_l \,\mathbb{I}(x\in R_l).
@@ -207,6 +234,26 @@
             - \frac{G^2}{H+\lambda} \Bigr] - \gamma,
     \]
     где $G_{L,R},H_{L,R}$ — суммы градиентов и гессианов.
+
+    \begin{columns}[t,onlytextwidth]
+        % ---------- Случайный лес ----------
+        \column{0.48\textwidth}
+        \begin{block}{Random Forest}
+            \[
+                f_{\mathrm{RF}}(x)=\frac{1}{B}\sum_{b=1}^{B} f^{(b)}(x)
+            \]
+
+        \end{block}
+
+        % ---------- Градиентный бустинг ----------
+        \column{0.48\textwidth}
+        \begin{block}{Gradient Boosting}
+            \[
+                f_{\mathrm{GB}}(x)=f^{(0)}(x)+\nu\sum_{b=1}^{B} f^{(b)}(x)
+            \]
+
+        \end{block}
+    \end{columns}
 \end{frame}
 
 %----------------------------------------------------------------------------------------------------------
@@ -235,47 +282,81 @@
     \includegraphics[width=1\textwidth]{bin/mape_vs_pseudo_mape.pdf}
 \end{frame}
 
-%--------------------------------------------------
-\begin{frame}{Random Forest и Gradient Boosting}
-    \begin{columns}[t,onlytextwidth]
-        % ---------- Случайный лес ----------
-        \column{0.48\textwidth}
-        \begin{block}{Random Forest}
-            \[
-                f_{\mathrm{RF}}(x)=\frac{1}{B}\sum_{b=1}^{B} f^{(b)}(x)
-            \]
-
-            \begin{itemize}
-                \item Разделение времён года
-            \end{itemize}
-        \end{block}
-
-        % ---------- Градиентный бустинг ----------
-        \column{0.48\textwidth}
-        \begin{block}{Gradient Boosting}
-            \[
-                f_{(B)}(x)=f^{(0)}(x)+\nu\sum_{b=1}^{B} f^{(b)}(x)
-            \]
-
-            \begin{itemize}
-                \item Последовательная обработка осадков из прошлого.
-            \end{itemize}
-        \end{block}
-    \end{columns}
-
-\end{frame}
-
 %----------------------------------------------------------------------------------------------------------
 % ============================================================
 % Boosting frames (example – extend as needed)
 % ============================================================
 
+% \begin{frame}{Результаты: Random Forest}
+%     \quadgraphics{bin/shap_plots/forest/shap\_top100.pdf}%
+%     {bin/shap_plots/forest/shap\_top101.pdf}%
+%     {bin/shap_plots/forest/shap\_top102.pdf}%
+%     {bin/shap_plots/forest/shap\_top103.pdf}
+% \end{frame}
+%-------------------------------------------------
+% Gradient Boosting – per-cluster results
+%-------------------------------------------------
+% One slide: Boosting (top) + Forest (bottom)
+
+\begin{frame}{Результаты}
+    \centering
+    \includegraphics[width=\textwidth]{/home/khuzin/Projects/2025-Project-188/slides/bin/forest_prediction.pdf}
+    \vspace{0.3cm}      % adjust spacing as you like
+    \includegraphics[width=\textwidth]{/home/khuzin/Projects/2025-Project-188/slides/bin/Gradient_prediction.pdf}\par
+\end{frame}
+
+\begin{frame}{Результаты}
+    \centering
+
+    %----------- Gradient Boosting ---------------
+    \textbf{Gradient Boosting}\\[0.2cm]
+    \begin{tabular}{
+            l    % cluster
+            c    % NSE
+            c    % RMSE
+            c    % MAE
+            c    % MAPE
+            r    % n_samples
+        }
+        \toprule
+        \textbf{cluster} & \textbf{NSE} & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE} & \textbf{\#} \\
+        \midrule
+        0                & 0.780        & 0.577         & 0.259        & 0.655         & 44\,544     \\
+        1                & 0.634        & 0.372         & 0.143        & 1.228         & 38\,371     \\
+        2                & 0.820        & 0.214         & 0.120        & 0.454         & 1\,096      \\
+        3                & 0.829        & 0.708         & 0.325        & 1.093         & 12\,583     \\
+        \bottomrule
+    \end{tabular}
+
+    \vspace{1.0em}  % small vertical gap
+
+    %----------- Random Forest -------------------
+    \textbf{Random Forest}\\[0.2cm]
+    \begin{tabular}{
+            l
+            c
+            c
+            c
+            c
+            r
+        }
+        \toprule
+        \textbf{cluster} & \textbf{NSE} & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE} & \textbf{\#} \\
+        \midrule
+        0                & 0.922        & 0.343         & 0.149        & 0.428         & 44\,544     \\
+        1                & 0.909        & 0.185         & 0.070        & 0.590         & 38\,371     \\
+        2                & 0.950        & 0.112         & 0.052        & 0.173         & 1\,096      \\
+        3                & 0.939        & 0.424         & 0.158        & 0.653         & 12\,583     \\
+        \bottomrule
+    \end{tabular}
+\end{frame}
+
 % --- first four bar plots (bar0–bar3) ----------------------------------------
 \begin{frame}{Результаты: Gradient Boosting}
-    \quadgraphics{bin/shap_plots/boosting/shap\_top10\_bar0.pdf}%
-    {bin/shap_plots/boosting/shap\_top10\_bar1.pdf}%
-    {bin/shap_plots/boosting/shap\_top100.pdf}%
-    {bin/shap_plots/boosting/shap\_top101.pdf}%
+    \quadgraphics{/home/khuzin/Projects/2025-Project-188/slides/bin/shaps/gb/shap_top10_0.pdf}%
+    {/home/khuzin/Projects/2025-Project-188/slides/bin/shaps/gb/shap_top10_1.pdf}%
+    {/home/khuzin/Projects/2025-Project-188/slides/bin/shaps/gb/shap_top10_2.pdf}%
+    {/home/khuzin/Projects/2025-Project-188/slides/bin/shaps/gb/shap_top10_3.pdf}%
 \end{frame}
 
 % % --- next two bar plots + overall summaries ----------------------------------
@@ -289,52 +370,18 @@
 % Random‑Forest frames (mirror of above)
 % ============================================================
 \begin{frame}{Результаты: Random Forest}
-    \quadgraphics{bin/shap_plots/forest_50/shap\_top10\_bar0.pdf}%
-    {bin/shap_plots/forest_50/shap\_top10\_bar1.pdf}%
-    {bin/shap_plots/forest_50/shap\_top100.pdf}%
-    {bin/shap_plots/forest_50/shap\_top101.pdf}%
+    \quadgraphics{/home/khuzin/Projects/2025-Project-188/slides/bin/shaps/rf/shap_top10_0.pdf}%
+    {/home/khuzin/Projects/2025-Project-188/slides/bin/shaps/rf/shap_top10_1.pdf}%
+    {/home/khuzin/Projects/2025-Project-188/slides/bin/shaps/rf/shap_top10_2.pdf}%
+    {/home/khuzin/Projects/2025-Project-188/slides/bin/shaps/rf/shap_top10_3.pdf}%
 \end{frame}
 
-% \begin{frame}{Результаты: Random Forest}
-%     \quadgraphics{bin/shap_plots/forest/shap\_top100.pdf}%
-%     {bin/shap_plots/forest/shap\_top101.pdf}%
-%     {bin/shap_plots/forest/shap\_top102.pdf}%
-%     {bin/shap_plots/forest/shap\_top103.pdf}
-% \end{frame}
-
-\begin{frame}{Результаты}
-    \centering
-    \begin{tabular}{
-            l
-            c
-            c
-            c
-            c
-        }
-        \toprule
-        \textbf{Model}    & \textbf{NSE} & \textbf{MAPE} & \textbf{RMSE} & \textbf{MAE} \\
-        \midrule
-        Random Forest     & -398.5       & 1355.1        & 60.654        & 36.755       \\
-        Gradient Boosting & 0.470        & 27.009        & 2.216         & 0.853        \\
-        \bottomrule
-    \end{tabular}
-\end{frame}
-
-
-\begin{frame}{Результаты}
-    \centering
-    \includegraphics[width=\textwidth]{bin/Gradient_prediction.pdf}
-    \vspace{0.3cm}      % adjust spacing as you like
-    \includegraphics[width=\textwidth]{bin/forest_prediction.pdf}\par
-\end{frame}
 
 %------------------------------------------------------------------------------------
 \begin{frame}{Заключение}
     \begin{itemize}
-        \item Требуется анализ с использованием обширного датасета
-        \item Модели внутри класса Gradient Boosting не проявляют эквифинальности
-        \item Модели внутри класса Random Forest не проявляют эквифинальности
-        \item Лучшие в классах Random Forest и Gradient Boosting модели выделяют разные признаки
+        \item Выделенные моделями признаки не совпадают с основными кластеров, что требует дальнейшего изучения.
+        \item Проявление эквифинальности наблюдалось в ходе проведения экспериментов, особенно с использованием Random Forest.
     \end{itemize}
 \end{frame}
 %----------------------------------------------------------------------------------------------------------

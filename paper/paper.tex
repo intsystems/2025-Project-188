@@ -30,6 +30,9 @@
 \usepackage{braket}
 \usepackage[colorinlistoftodos]{todonotes}
 
+\usepackage{booktabs}  % красивые линии
+\usepackage{makecell}  % многострочные ячейки
+
 % Custom TODO commands
 \newcommand{\todoask}[1]{\todo[color=blue!30]{\textbf{Ask:} #1}}
 \newcommand{\todocheck}[1]{\todo[color=green!30]{\textbf{Check:} #1}} 
@@ -105,7 +108,7 @@
 %% ============================================================================================================
 
 \begin{abstract}
-In this article, we address the problem of equifinality in data-driven hydrological modeling. Equifinality is when different feature sets or model architectures yield similar predictive efficiency. We investigate the influence of static catchment features on predictions made by traditional machine learing models(e.g., random forest, gradient boosting), recurrent neural networks \todo{and transformers} across various river basins in Eurasia. By analyzing feature importance and model behavior, we identify dominant predictors and assess the practicality of employing complex models in terms of interpretability and computational cost. This approach provides insights into the trade-offs between model complexity and predictive robustness in the presence of equifinality.
+    In this article, we address the problem of equifinality in data-driven hydrological modeling. Equifinality is when different feature sets or model architectures yield similar predictive efficiency. We investigate the influence of static catchment features on predictions made by traditional machine learing models(e.g., random forest, gradient boosting), recurrent neural networks \todo{and transformers} across various river basins in Eurasia. By analyzing feature importance and model behavior, we identify dominant predictors and assess the practicality of employing complex models in terms of interpretability and computational cost. This approach provides insights into the trade-offs between model complexity and predictive robustness in the presence of equifinality.
 \end{abstract}
 
 
@@ -120,6 +123,64 @@ In this article, we address the problem of equifinality in data-driven hydrologi
 
 
 \listoftodos[List of suggested changes]
+
+\begin{table}[htbp]
+    \centering
+    % ширину текстовых столбцов удобно задать явно,
+    % чтобы переносы строк не «выпирали»
+    \begin{tabular}{c p{3.2cm} p{4.0cm} p{4.0cm}}
+        \toprule
+        \textbf{cluster} & \textbf{rank 1} & \textbf{rank 2} & \textbf{rank 3} \\
+        \midrule
+        0                &
+        \makecell[l]{lat\_z                                                    \\Широта} &
+        \makecell[l]{for\_pc\_sse\_z                                           \\Площадь лесного покрова, \%} &
+        \makecell[l]{gwt\_cm\_sav\_z                                           \\Глубина уровня грунтовых вод, см}\\[2pt]
+
+        1                &
+        \makecell[l]{crp\_pc\_sse\_z                                           \\Площадь пахотных земель, \%} &
+        \makecell[l]{for\_pc\_sse\_z                                           \\Площадь лесного покрова, \%} &
+        \makecell[l]{pst\_pc\_sse\_z                                           \\Площадь пастбищ, \%}\\[2pt]
+
+        2                &
+        \makecell[l]{cly\_pc\_sav\_z                                           \\Доля глины в почве, \%} &
+        \makecell[l]{slt\_pc\_sav\_z                                           \\Доля ила в почве, \%} &
+        \makecell[l]{snd\_pc\_sav\_z                                           \\Доля песка в почве, \%}\\[2pt]
+
+        3                &
+        \makecell[l]{inu\_pc\_ult\_z                                           \\Площадь затопления, \%} &
+        \makecell[l]{lka\_pc\_use\_z                                           \\Доля площади озёр, \%} &
+        \makecell[l]{lat\_z                                                    \\Широта}\\[2pt]
+
+        4                &
+        \makecell[l]{sgr\_dk\_sav\_z                                           \\Градиент русла} &
+        \makecell[l]{gwt\_cm\_sav\_z                                           \\Глубина уровня грунтовых вод, см} &
+        \makecell[l]{slp\_dg\_sav\_z                                           \\Уклон поверхности, $^\circ$}\\[2pt]
+
+        5                &
+        \makecell[l]{lon\_z                                                    \\Долгота} &
+        \makecell[l]{lat\_z                                                    \\Широта} &
+        \makecell[l]{slp\_dg\_sav\_z                                           \\Уклон поверхности, $^\circ$}\\[2pt]
+
+        6                &
+        \makecell[l]{prm\_pc\_sse\_z                                           \\Площадь вечной мерзлоты, \%} &
+        \makecell[l]{lon\_z                                                    \\Долгота} &
+        \makecell[l]{ws\_area\_z                                               \\Площадь водосбора, км$^{2}$}\\[2pt]
+
+        7                &
+        \makecell[l]{ele\_mt\_sav\_z                                           \\Высота над ур.\ моря, м} &
+        \makecell[l]{height\_bs\_z                                             \\Средняя высота бассейна, м} &
+        \makecell[l]{prm\_pc\_sse\_z                                           \\Площадь вечной мерзлоты, \%}\\[2pt]
+
+        8                &
+        \makecell[l]{lkv\_mc\_usu\_z                                           \\Объём озёр, млн м$^{3}$} &
+        \makecell[l]{cly\_pc\_sav\_z                                           \\Доля глины в почве, \%} &
+        \makecell[l]{slt\_pc\_sav\_z                                           \\Доля ила в почве, \%}\\
+        \bottomrule
+    \end{tabular}
+    \caption{Кластеры и три наиболее информативных признака (с русскими определениями).}
+    \label{tab:cluster_ranks_ru}
+\end{table}
 
 %% ============================================================================================================
 %% Introduction
